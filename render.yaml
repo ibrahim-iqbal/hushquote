@@ -1,0 +1,11 @@
+services:
+  - type: web
+    runtime: static
+    name: hushquote
+    repo: https://github.com/ibrahim-iqbal/hushquote
+    branch: main
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: NODE_VERSION
+        value: "22"

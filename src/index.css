@@ -1,0 +1,71 @@
+@import "tailwindcss";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+
+@theme {
+  --font-sans: "Geist Variable", system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", monospace;
+
+  /* light */
+  --color-bg: #F4F5F7;
+  --color-surface: #FFFFFF;
+  --color-ink: #15171C;
+  --color-muted: #5C6470;
+  --color-line: #E3E6EB;
+  --color-accent: #2B4BD7;
+  --color-accent-soft: #E9EDFB;
+  --color-pending: #F0F1F4;
+  --color-danger: #C0392B;
+
+  --shadow-card: 0 1px 2px rgba(21,23,28,.05), 0 2px 8px rgba(21,23,28,.04);
+  --shadow-sheet: 0 2px 6px rgba(21,23,28,.06), 0 16px 48px rgba(21,23,28,.10);
+}
+
+:root {
+  --bg: #F4F5F7;
+  --surface: #FFFFFF;
+  --ink: #15171C;
+  --muted: #5C6470;
+  --line: #E3E6EB;
+  --accent: #2B4BD7;
+  --accent-soft: #E9EDFB;
+  --pending: #F0F1F4;
+  --danger: #C0392B;
+  --shadow: 0 1px 2px rgba(21,23,28,.05), 0 2px 8px rgba(21,23,28,.04);
+  --sheet-shadow: 0 2px 6px rgba(21,23,28,.06), 0 16px 48px rgba(21,23,28,.10);
+  --mono: "Geist Mono Variable", monospace;
+  --grad-btn: linear-gradient(180deg,#3558E8,#2B4BD7 55%,#2440BE);
+  --grad-edge: linear-gradient(90deg,#1E37A8,#2B4BD7 35%,#6B85F2 75%,#2B4BD7);
+}
+
+:root[data-theme="dark"] {
+  --bg: #101216;
+  --surface: #181B21;
+  --ink: #E9EBEF;
+  --muted: #8B93A1;
+  --line: #272B33;
+  --accent: #6B85F2;
+  --accent-soft: #1D2440;
+  --pending: #1E222A;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+@media print {
+  .no-print,
+  .no-print * {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+  }
+}
