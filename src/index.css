@@ -38,6 +38,23 @@
   --grad-edge: linear-gradient(90deg,#1E37A8,#2B4BD7 35%,#6B85F2 75%,#2B4BD7);
 }
 
+/* Dark tokens apply automatically from system preference (no toggle built
+   yet), and are also settable by hand via data-theme for a future switch.
+   Bug fix: these were only ever reachable through the attribute selector,
+   which nothing in the app sets - dark mode was dead code until this. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101216;
+    --surface: #181B21;
+    --ink: #E9EBEF;
+    --muted: #8B93A1;
+    --line: #272B33;
+    --accent: #6B85F2;
+    --accent-soft: #1D2440;
+    --pending: #1E222A;
+  }
+}
+
 :root[data-theme="dark"] {
   --bg: #101216;
   --surface: #181B21;

@@ -91,11 +91,11 @@ export default function CoverPage() {
         </div>
       </div>
       <div
-        className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-[12.5px] text-white/96"
+        className="absolute bottom-6 left-1/2 z-10 flex w-max max-w-[calc(100%-32px)] -translate-x-1/2 items-center gap-2 rounded-full px-4 py-2.5 text-[12.5px] leading-snug text-white/96 sm:whitespace-nowrap"
         style={{ background: 'rgba(14,21,62,.82)', backdropFilter: 'blur(4px)' }}
       >
-        <LockKey size={15} />
-        Runs on your device. Works offline. Nothing uploaded.
+        <LockKey size={15} className="shrink-0" />
+        <span className="text-left">Runs on your device. Works offline. Nothing uploaded.</span>
       </div>
     </div>
   )
