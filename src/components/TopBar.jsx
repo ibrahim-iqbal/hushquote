@@ -1,7 +1,7 @@
-import { LockKey, DownloadSimple } from '@phosphor-icons/react'
+import { LockKey, DownloadSimple, PencilSimple } from '@phosphor-icons/react'
 import { useQuote } from '../context/QuoteContext'
 
-export default function TopBar({ onDownloadPdf }) {
+export default function TopBar({ onDownloadPdf, onEditProfile }) {
   const quote = useQuote()
   const hasClient = Boolean(quote.client?.name)
 
@@ -30,6 +30,15 @@ export default function TopBar({ onDownloadPdf }) {
         </div>
 
         <div className="flex gap-2 pb-2">
+          <button
+            type="button"
+            onClick={onEditProfile}
+            aria-label="Edit business profile"
+            className="flex min-h-9 items-center justify-center rounded-lg border px-2.5"
+            style={{ borderColor: 'var(--line)', color: 'var(--muted)' }}
+          >
+            <PencilSimple size={16} />
+          </button>
           <button
             type="button"
             onClick={onDownloadPdf}

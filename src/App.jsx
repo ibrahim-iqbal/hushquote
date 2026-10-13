@@ -2,16 +2,19 @@ import { useState } from 'react'
 import { ModelProvider, useModel } from './context/ModelContext'
 import { QuoteProvider, useQuoteDispatch } from './context/QuoteContext'
 import { ProfileProvider } from './context/ProfileContext'
+import { RatesProvider } from './context/RatesContext'
 import { storageAvailable } from './lib/storage'
 import CoverPage from './components/CoverPage'
 import TopBar from './components/TopBar'
 import MarginRail from './components/MarginRail'
 import Sheet from './components/Sheet'
 import CommandBar from './components/CommandBar'
+import ProfileDrawer from './components/ProfileDrawer'
 
 function Workspace() {
   const [transcript, setTranscript] = useState('')
   const [hint, setHint] = useState('')
+  const [profileOpen, setProfileOpen] = useState(false)
   const dispatch = useQuoteDispatch()
   const model = useModel()
 
@@ -65,7 +68,8 @@ function Workspace() {
   return (
     <div className="relative flex h-dvh min-h-0 flex-col overflow-hidden" style={{ background: 'var(--bg)' }}>
       <CoverPage />
-      <TopBar onDownloadPdf={handleDownloadPdf} />
+      <TopBar onDownloadPdf={handleDownloadPdf} onEditProfile={() => setProfileOpen(true)} />
+      <ProfileDrawer open={profileOpen} onClose={() => setProfileOpen(false)} />
       {!storageAvailable && (
         <div
           className="shrink-0 px-4 py-1.5 text-center text-xs md:px-[26px]"
@@ -95,9 +99,11 @@ export default function App() {
   return (
     <ModelProvider>
       <ProfileProvider>
-        <QuoteProvider>
-          <Workspace />
-        </QuoteProvider>
+        <RatesProvider>
+          <QuoteProvider>
+            <Workspace />
+          </QuoteProvider>
+        </RatesProvider>
       </ProfileProvider>
     </ModelProvider>
   )
