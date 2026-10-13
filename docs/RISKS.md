@@ -51,13 +51,54 @@ and is independently removable/editable before being sent, so a bad
 multi-item extraction costs the user a few taps of cleanup, never a wrong
 quote going out silently. Verified live: removing a bad duplicate line
 works correctly and totals recompute.
+
+**D4 full 20-transcript sweep (docs/test/transcripts.md), all 20 run.**
+This revises the D2 finding above - the problem is worse and more specific
+than "3+ item jobs degrade." Full results per transcript:
+- **1, 3**: already run D2, single-item/corrected-item - reliable.
+- **2, 7, 13**: single real job hallucinated into 3 duplicate fragments; flat-fee amounts landed in `q` instead of `r` (logo package: q=450, r=0).
+- **4, 8, 10, 11, 12, 18, 19**: real item(s) extracted with roughly right description, but qty/unit/rate garbled, AND a fabricated `Callout/1/hour` line appended that has no basis in the transcript - this is the FEW_SHOT example's 4th item leaking in, not a rate-library effect (confirmed by clearing the rate library mid-sweep and seeing it persist).
+- **5, 17**: right item count in the ballpark but duplicated 2-5x with wrong units.
+- **6, 16**: best results in the sweep - first item's description/qty/unit/rate came out correct (16 even got the corrected rate, 10 not 8), though extra garbage lines still followed.
+- **9, 14**: **critical** - model ignored the real transcript entirely and echoed the FEW_SHOT example near-verbatim (Hendersons/Materials/Labor/Callout), including on transcript 14 which is literally about a callout fee and a valve. Confirms single-example anchoring (the D2 "fix" from two examples down to one) does not fully prevent anchoring - one example is still enough to hijack the output on some inputs.
+- **20**: **critical** - "just an inspection, no numbers at all" (input designed to need zero extraction) produced a fully invented priced quote (Roof 40 m2, Materials 1 item @300, Labor 2 day, Callout 1 hour) - a direct violation of "never let the model invent prices," and again the FEW_SHOT example's numbers verbatim.
+
+Tally: the FEW_SHOT example's content (description "Callout" or the whole
+example) leaked into 10 of 18 freshly-run transcripts. This is now
+understood as the dominant failure mode, not general small-model noise.
+
+**D4 experiment (not shipped): dropped FEW_SHOT entirely, zero-shot with
+only the JSON-schema constrained decoding (which already enforces field
+names and the unit enum) and system prompt.** Retested the two critical
+cases (9, 20) and one leak case (4):
+- 9: no more verbatim echo, item count matched expected (4), but the `d`
+  field came out as the literal string `"${1}"` on every line - a new,
+  different corruption.
+- 20: correctly surrendered to manual mode (null, no invented quote) -
+  this IS the expected/safe behavior for this input.
+- 14: surrendered to manual mode (hit the 400-token cap on both the
+  initial and repair generation, so neither parsed) - safe but a miss.
+- 4 (retest): no Callout leak, but duplicated the single real item 8x
+  (worse count than the few-shot version's 2-4x) with the description
+  broken to the literal string `"+"`.
+Verdict: zero-shot trades the two worst failure modes (fabricated
+unrelated content, invented prices on a no-data job) for a new, distinct
+corruption (broken description field) and in one case worse duplication.
+Not a clean win either way - **reverted to FEW_SHOT, not shipped**, so D4
+ships the known, documented behavior rather than an unproven swap this
+close to the deadline. Worth a real follow-up with more token budget to
+properly A/B both prompts across all 20 before picking a default, and/or
+testing whether the 1B model variant doesn't have this failure mode at all
+(it has far more headroom to actually use the schema instead of pattern-
+matching the nearest-looking example).
+
 Mitigation ladder:
-1. Few-shot > instructions at this size - applied, see above.
-2. Rate-library grounding: inject user's known services so the model maps to existing labels instead of inventing.
-3. **Deterministic co-extraction**: cheap regex pass for quantities+units ("40 sqm", "2 days", "$300") runs in parallel; numbers the model drops get offered as suggestion chips in Review. Model misses stop being data loss. **Not implemented in D2** - next cheapest lever if accuracy still matters after D3/D4 polish; parked, not pursued now, per the don't-extend rule.
-4. Zod + repair retry (ARCHITECTURE §5) - implemented, but doesn't help here: the bad outputs are schema-valid JSON (zod passes), the content is just wrong. Repair retry only fires on structural parse failure, which this is not.
-5. **20-transcript test set (docs/test/transcripts.md, written D1)**: only 2 of the 20 run so far (one single-item, one 3-item). Running the rest, and a real single-vs-multi accuracy count, is the right next step before any 270M-vs-1B default decision - not done in D2, logged as open for D3/D4.
-Verify: **D2 end**. Kill-switch: flip default to 1B-on-WebGPU / manual-first on WASM; the post honestly reports the tradeoff (good writing material, not a failure).
+1. Few-shot > instructions at this size - applied, see above. Superseded by the finding above: the single example itself is now the primary bug source, not a pure win.
+2. Rate-library grounding: inject user's known services so the model maps to existing labels instead of inventing. Ruled out as the cause of the "Callout" leak (confirmed by clearing the library and still seeing it) - the real cause is FEW_SHOT, see above.
+3. **Deterministic co-extraction**: cheap regex pass for quantities+units ("40 sqm", "2 days", "$300") runs in parallel; numbers the model drops get offered as suggestion chips in Review. Model misses stop being data loss. **Not implemented** - still the next cheapest lever, now more clearly justified given the leak rate above; parked for post-hackathon or if D4/D5 time remains.
+4. Zod + repair retry (ARCHITECTURE §5) - implemented. Helps on structural failures (transcript 14 zero-shot surrendered cleanly instead of emitting garbage) but does nothing for schema-valid-but-wrong content, which is most of the failures above.
+5. ~~20-transcript test set, only 2 run~~ **done D4, see above.**
+Verify: **D4 (this sweep)**. Kill-switch unchanged: flip default to 1B-on-WebGPU / manual-first on WASM; the post honestly reports the tradeoff (good writing material, not a failure) - this sweep's data makes that writeup stronger, not weaker: it is a defensible, measured limitation with a working floor (manual mode, pending-chip UI), not a hidden one.
 
 ## R4 — Schedule (4 days, solo)
 1. **UI-first with mock data (D1)** — the manual mode IS the mock; even if the model integration cratered entirely, a polished, working, honest quote builder ships. The floor is a submittable product.
