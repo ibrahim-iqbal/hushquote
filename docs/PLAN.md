@@ -55,6 +55,9 @@ Speak a job description; a local open-weight model running **entirely in your br
 "A side hustle can't afford a SaaS stack. HushQuote is what invoicing looks like when the AI is a file you ship, not a service you rent: a 1B-parameter open-weight model, running in the browser, doing one job well — and because it's local, a plumber's client list and day-rates stay on the plumber's phone."
 
 ## Decisions log
+- 2026-10-13 (D1): Scaffold, shell, manual quote builder, and Cover Page built and verified (build clean, zero console errors, mobile 375px collapse matches proven mockup, localStorage persistence confirmed, totals compute live). Committed and pushed to https://github.com/ibrahim-iqbal/hushquote (main).
+- 2026-10-13 (D1): Render deploy BLOCKED, not done. Render dashboard requires interactive sign-in; cannot proceed without entering the user's credentials, which is out of scope for an automated session. render.yaml is in the repo and correct. **Next action for a human or a session with an authenticated browser: sign in to Render, create a new Static Site from github.com/ibrahim-iqbal/hushquote, and in the dashboard (not just render.yaml) set Build Command `npm install && npm run build` and Publish Directory `dist`, per docs/HANDOFF.md gotchas.**
+
 - 2026-10-13: Idea chosen (HushQuote) over receipt-OCR (risk) and status-update writer (freshness). See IDEAS.md scoring.
 - 2026-10-13: ~~wllama primary / WebLLM enhancement~~ **superseded** → wllama V3 alone (ships WebGPU+WASM; WebLLM would add a second model format for nothing). See REVIEW.md B1.
 - 2026-10-13: Senior review pass done (REVIEW.md) — stack named concretely, Gemma pinned for the $200 partner category, voice demoted with honest cloud-speech disclosure, DigitalOcean category skipped deliberately.
