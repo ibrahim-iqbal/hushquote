@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HushQuote — Responsive Proof</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+  :root{
+    --bg:#F4F5F7; --surface:#FFFFFF; --ink:#15171C; --muted:#5C6470; --line:#E3E6EB;
+    --accent:#2B4BD7; --accent-soft:#E9EDFB; --pending:#F0F1F4;
+    --shadow:0 1px 2px rgba(21,23,28,.05), 0 2px 8px rgba(21,23,28,.04);
+    --sheet-shadow:0 2px 6px rgba(21,23,28,.06), 0 16px 48px rgba(21,23,28,.10);
+    --mono:'Geist Mono',monospace;
+    --grad-btn:linear-gradient(180deg,#3558E8,#2B4BD7 55%,#2440BE);
+    --grad-edge:linear-gradient(90deg,#1E37A8,#2B4BD7 35%,#6B85F2 75%,#2B4BD7);
+  }
+  *{box-sizing:border-box;margin:0}
+  html,body{height:100%}
+  body{font-family:'Geist',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.5;display:flex;flex-direction:column;min-height:100dvh}
+
+  .binder{height:4px;background:var(--grad-edge);flex:none}
+  .topbar{display:flex;align-items:flex-end;justify-content:space-between;padding:12px 16px 0;gap:10px;flex:none}
+  .wordmark{font-weight:650;font-size:15px;padding-bottom:10px;display:flex;align-items:center;gap:7px;flex:none}
+  .wordmark .mark{width:22px;height:22px;border-radius:6px;background:var(--grad-btn);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px}
+  .foldertab{display:none;background:var(--surface);border:1px solid var(--line);border-bottom:none;border-radius:10px 10px 0 0;padding:9px 16px;font-size:13.5px;font-weight:550;gap:10px;align-items:center;box-shadow:var(--shadow)}
+  .foldertab small{font-family:var(--mono);color:var(--muted);font-weight:400;font-size:12px}
+  .topactions{display:flex;gap:8px;padding-bottom:8px}
+  .primbtn{background:var(--grad-btn);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;font-family:inherit;display:flex;gap:6px;align-items:center;min-height:36px}
+
+  .work{flex:1;display:flex;flex-direction:column;min-height:0;border-top:1px solid var(--line);background:var(--surface)}
+
+  /* transcript: strip on mobile, rail on desktop */
+  .margin{border-bottom:1px solid var(--line);padding:12px 16px;background:
+    linear-gradient(rgba(244,245,247,.92),rgba(244,245,247,.92)),
+    repeating-linear-gradient(0deg, transparent 0 11px, rgba(43,75,215,.07) 11px 12px),
+    repeating-linear-gradient(90deg, transparent 0 11px, rgba(43,75,215,.07) 11px 12px)}
+  .mhead{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+  .said{font-family:var(--mono);font-size:12.5px;line-height:1.9;color:var(--muted);margin-top:6px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .said .seg.used{color:var(--ink);border-bottom:1.5px solid var(--line)}
+  .said .seg.hot{color:var(--accent);border-bottom:1.5px solid var(--accent);background:var(--accent-soft)}
+  .privnote{display:none;margin-top:auto;font-size:12px;color:var(--muted);line-height:1.5;gap:7px}
+  .privnote i{color:var(--accent);font-size:14px;margin-top:1px}
+
+  .sheetwrap{flex:1;padding:16px;overflow:auto;background:
+    repeating-linear-gradient(0deg, transparent 0 23px, rgba(21,23,28,.015) 23px 24px)}
+  .sheet{background:var(--surface);max-width:470px;margin:0 auto;border:1px solid var(--line);border-radius:4px;box-shadow:var(--sheet-shadow);padding:20px;font-size:13.5px}
+  .shead{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:2px solid var(--ink);gap:10px}
+  .shead .biz{font-weight:650;font-size:15px;min-width:0}
+  .shead .biz small{display:block;color:var(--muted);font-weight:400;font-size:11.5px;margin-top:1px}
+  .shead .qno{font-family:var(--mono);font-size:11.5px;color:var(--muted);text-align:right;line-height:1.7;flex:none}
+  .to{padding:10px 0;font-size:12.5px;color:var(--muted)}
+  .to b{color:var(--ink);font-weight:600;font-size:13.5px}
+  .sitem{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--line);align-items:baseline}
+  .sitem .sd{min-width:0}
+  .sitem .sd b{font-weight:550;display:block}
+  .sitem .sd small{font-family:var(--mono);color:var(--muted);font-size:11.5px}
+  .sitem .amt{font-family:var(--mono);font-size:13px;flex:none}
+  .sitem.linked{background:var(--accent-soft);margin:0 -10px;padding:9px 10px;border-radius:6px;border-top-color:transparent}
+  .sitem.linked .sd b{color:var(--accent)}
+  .stotals{margin-top:6px;border-top:2px solid var(--ink);padding-top:10px}
+  .strow{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);padding:1.5px 0}
+  .strow .amt{font-family:var(--mono)}
+  .strow.final{font-size:15px;color:var(--ink);font-weight:650;padding-top:6px}
+
+  .cmdbar{border-top:1px solid var(--line);background:var(--surface);padding:10px 12px calc(10px + env(safe-area-inset-bottom));display:flex;gap:10px;align-items:center;flex:none}
+  .cmdbar .field{flex:1;display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:10px;padding:12px;font-size:16px;color:var(--muted);background:var(--bg);min-height:48px}
+  .cmdbar .field i{color:var(--accent);font-size:19px;flex:none}
+  .cmdbar .field span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cmdbar .go{background:var(--grad-btn);color:#fff;border:none;border-radius:10px;width:48px;height:48px;flex:none;display:flex;align-items:center;justify-content:center;font-size:18px}
+
+  /* ===== >= 900px: rail layout ===== */
+  @media (min-width: 900px){
+    .topbar{padding:14px 26px 0}
+    .foldertab{display:flex}
+    .work{flex-direction:row}
+    .margin{width:252px;flex:none;border-bottom:none;border-right:1px solid var(--line);padding:18px;display:flex;flex-direction:column;gap:10px}
+    .said{-webkit-line-clamp:unset;display:block}
+    .privnote{display:flex}
+    .sheetwrap{padding:22px 30px}
+    .sheet{padding:28px 30px}
+    .cmdbar{padding:12px 26px}
+  }
+</style>
+</head>
+<body>
+  <div class="binder"></div>
+  <div class="topbar">
+    <div class="wordmark"><span class="mark"><i class="ph ph-lock-key"></i></span>HushQuote</div>
+    <div class="foldertab"><span>The Hendersons</span><small>Q-014 · draft</small></div>
+    <div class="topactions"><button class="primbtn"><i class="ph ph-download-simple"></i>PDF</button></div>
+  </div>
+  <div class="work">
+    <div class="margin">
+      <div class="mhead">You said <i class="ph ph-waveform"></i></div>
+      <div class="said">
+        <span class="seg used">tiled the Hendersons' bathroom,</span>
+        <span class="seg used">about 40 square meters,</span>
+        <span class="seg used">materials were 300,</span>
+        <span class="seg hot">two days labor</span>
+      </div>
+      <div class="privnote"><i class="ph ph-lock-key"></i>Processed on this device. Nothing was uploaded.</div>
+    </div>
+    <div class="sheetwrap">
+      <div class="sheet">
+        <div class="shead">
+          <div class="biz">Iqbal Tiling<small>ibq@tiling.co · USD</small></div>
+          <div class="qno">QUOTE Q-014<br>13 OCT 2026</div>
+        </div>
+        <div class="to">Prepared for <b>The Hendersons</b> · bathroom renovation</div>
+        <div class="sitem"><div class="sd"><b>Wall &amp; floor tiling</b><small>40 m2 x 38.00</small></div><div class="amt">1,520.00</div></div>
+        <div class="sitem"><div class="sd"><b>Materials</b><small>1 x 300.00</small></div><div class="amt">300.00</div></div>
+        <div class="sitem linked"><div class="sd"><b>Labor</b><small>2 days x 260.00?</small></div><div class="amt">520.00</div></div>
+        <div class="stotals">
+          <div class="strow"><span>Subtotal</span><span class="amt">2,340.00</span></div>
+          <div class="strow"><span>VAT 10%</span><span class="amt">234.00</span></div>
+          <div class="strow final"><span>Total</span><span class="amt">$2,574.00</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cmdbar">
+    <div class="field"><i class="ph ph-microphone"></i><span>Add to this quote...</span></div>
+    <button class="go"><i class="ph ph-arrow-up"></i></button>
+  </div>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HushQuote v3 — The Margin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+  :root{
+    --bg:#F4F5F7; --surface:#FFFFFF; --ink:#15171C; --muted:#5C6470; --line:#E3E6EB;
+    --accent:#2B4BD7; --accent-soft:#E9EDFB; --pending:#F0F1F4;
+    --shadow:0 1px 2px rgba(21,23,28,.05), 0 2px 8px rgba(21,23,28,.04);
+    --sheet-shadow:0 2px 6px rgba(21,23,28,.06), 0 16px 48px rgba(21,23,28,.10);
+    --mono:'Geist Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{font-family:'Geist',system-ui,sans-serif;background:#E9EAED;color:var(--ink);padding:32px;font-size:16px;line-height:1.5}
+  h1{font-size:28px;font-weight:650;letter-spacing:-.02em}
+  .sub{color:#5C6470;margin:4px 0 26px;max-width:72ch}
+  .frames{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start}
+
+  /* ============ DESKTOP FRAME ============ */
+  .desktop{width:860px;height:600px;background:var(--bg);border-radius:14px;box-shadow:0 10px 36px rgba(21,23,28,.14);border:1px solid rgba(21,23,28,.07);overflow:hidden;display:flex;flex-direction:column}
+  .cap{font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#8B93A1;text-align:center;padding:8px;background:rgba(21,23,28,.03);border-bottom:1px solid rgba(21,23,28,.05)}
+
+  /* top bar: job folder tab */
+  .topbar{display:flex;align-items:flex-end;justify-content:space-between;padding:14px 26px 0;background:var(--bg)}
+  .wordmark{font-weight:650;font-size:15px;letter-spacing:-.01em;padding-bottom:12px}
+  .wordmark i{color:var(--accent);font-size:15px;margin-right:6px}
+  .foldertab{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-bottom:none;border-radius:10px 10px 0 0;padding:9px 16px;font-size:13.5px;font-weight:550;box-shadow:var(--shadow)}
+  .foldertab small{font-family:var(--mono);color:var(--muted);font-weight:400;font-size:12px}
+  .topactions{display:flex;gap:8px;padding-bottom:10px}
+  .ghostbtn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 13px;font-size:13px;font-weight:550;font-family:inherit;color:var(--ink);display:flex;gap:6px;align-items:center}
+  .primbtn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;font-family:inherit;display:flex;gap:6px;align-items:center}
+
+  /* main: margin + sheet */
+  .work{flex:1;display:flex;min-height:0;border-top:1px solid var(--line);background:var(--surface)}
+
+  /* margin rail */
+  .margin{width:252px;border-right:1px solid var(--line);padding:18px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+  .margin .mhead{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+  .margin .mhead i{font-size:13px}
+  .said{font-family:var(--mono);font-size:12.5px;line-height:1.9;color:var(--muted)}
+  .said .seg{border-bottom:1.5px solid transparent;padding-bottom:1px}
+  .said .seg.used{color:var(--ink);border-color:var(--line)}
+  .said .seg.hot{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+  .margin .note{margin-top:auto;font-size:12px;color:var(--muted);line-height:1.5;display:flex;gap:7px}
+  .margin .note i{color:var(--accent);font-size:14px;margin-top:1px}
+
+  /* the sheet */
+  .sheetwrap{flex:1;padding:22px 30px;overflow:hidden;background:
+    repeating-linear-gradient(0deg, transparent 0 23px, rgba(21,23,28,.015) 23px 24px)}
+  .sheet{background:var(--surface);max-width:470px;margin:0 auto;border:1px solid var(--line);border-radius:4px;box-shadow:var(--sheet-shadow);padding:28px 30px;font-size:13.5px}
+  .sheet .shead{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:14px;border-bottom:2px solid var(--ink)}
+  .sheet .shead .biz{font-weight:650;font-size:15px}
+  .sheet .shead .biz small{display:block;color:var(--muted);font-weight:400;font-size:11.5px;margin-top:1px}
+  .sheet .shead .qno{font-family:var(--mono);font-size:11.5px;color:var(--muted);text-align:right;line-height:1.7}
+  .sheet .to{padding:12px 0;font-size:12.5px;color:var(--muted)}
+  .sheet .to b{color:var(--ink);font-weight:600;font-size:13.5px}
+  .sitem{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--line);align-items:baseline}
+  .sitem .sd b{font-weight:550;display:block}
+  .sitem .sd small{font-family:var(--mono);color:var(--muted);font-size:11.5px}
+  .sitem .amt{font-family:var(--mono);font-size:13px}
+  .sitem.linked{background:var(--accent-soft);margin:0 -12px;padding:9px 12px;border-radius:6px;border-top-color:transparent}
+  .sitem.linked .sd b{color:var(--accent)}
+  .sitem.pend .sd b::after{content:"estimated";font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px dashed var(--muted);border-radius:4px;padding:1px 5px;margin-left:8px;vertical-align:1px}
+  .stotals{margin-top:6px;border-top:2px solid var(--ink);padding-top:10px}
+  .strow{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);padding:1.5px 0}
+  .strow .amt{font-family:var(--mono)}
+  .strow.final{font-size:15px;color:var(--ink);font-weight:650;padding-top:6px}
+  .strow.final .amt{font-weight:600;font-size:15.5px}
+
+  /* command bar */
+  .cmdbar{border-top:1px solid var(--line);background:var(--surface);padding:12px 26px;display:flex;gap:12px;align-items:center}
+  .cmdbar .field{flex:1;display:flex;align-items:center;gap:11px;border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;font-size:14.5px;color:var(--muted);background:var(--bg)}
+  .cmdbar .field i{color:var(--accent);font-size:19px}
+  .cmdbar .go{background:var(--accent);color:#fff;border:none;border-radius:10px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:18px}
+
+  /* ============ MOBILE FRAME ============ */
+  .mobile{width:340px;height:600px;background:var(--bg);border-radius:22px;box-shadow:0 10px 32px rgba(21,23,28,.13);border:1px solid rgba(21,23,28,.07);overflow:hidden;display:flex;flex-direction:column}
+  .m-top{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 10px}
+  .m-top .wordmark{padding:0}
+  .m-strip{margin:0 14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-family:var(--mono);font-size:11.5px;line-height:1.8;color:var(--muted);box-shadow:var(--shadow)}
+  .m-strip .mhead{font-family:'Geist';font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;display:flex;justify-content:space-between}
+  .m-sheetwrap{flex:1;padding:14px;overflow:hidden}
+  .m-sheetwrap .sheet{padding:18px;font-size:12.5px;max-width:none}
+  .m-cmd{border-top:1px solid var(--line);background:var(--surface);padding:10px 14px;display:flex;gap:10px;align-items:center}
+  .m-cmd .field{flex:1;display:flex;align-items:center;gap:9px;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;font-size:14px;color:var(--muted);background:var(--bg)}
+  .m-cmd .field i{color:var(--accent);font-size:18px}
+  .m-cmd .go{background:var(--accent);color:#fff;border:none;border-radius:10px;width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;font-size:17px}
+</style>
+</head>
+<body>
+<h1>HushQuote v3 · "The Margin"</h1>
+<p class="sub">One living document, not three screens. Your words live in the margin (mono, dictation-strip); the typeset quote builds on the sheet; tapping a line item lights up the exact phrase that produced it. The AI is auditable by design. Input = one typewriter bar.</p>
+
+<div class="frames">
+
+  <!-- DESKTOP -->
+  <div>
+    <div class="desktop">
+      <div class="cap">Desktop · tap "Labor" → its source phrase lights up</div>
+      <div class="topbar">
+        <div class="wordmark"><i class="ph ph-lock-key"></i>HushQuote</div>
+        <div class="foldertab"><span>The Hendersons</span><small>Q-014 · draft</small></div>
+        <div class="topactions">
+          <button class="ghostbtn"><i class="ph ph-share-network"></i>Share</button>
+          <button class="primbtn"><i class="ph ph-download-simple"></i>PDF</button>
+        </div>
+      </div>
+      <div class="work">
+        <div class="margin">
+          <div class="mhead">You said <i class="ph ph-waveform"></i></div>
+          <div class="said">
+            <span class="seg used">tiled the Hendersons' bathroom,</span>
+            <span class="seg used">about 40 square meters,</span>
+            <span class="seg used">materials were 300,</span>
+            <span class="seg hot">two days labor</span>
+          </div>
+          <div class="note"><i class="ph ph-lock-key"></i>Processed on this device. Nothing was uploaded.</div>
+        </div>
+        <div class="sheetwrap">
+          <div class="sheet">
+            <div class="shead">
+              <div class="biz">Iqbal Tiling<small>ibq@tiling.co · USD</small></div>
+              <div class="qno">QUOTE Q-014<br>13 OCT 2026</div>
+            </div>
+            <div class="to">Prepared for <b>The Hendersons</b> · bathroom renovation</div>
+            <div class="sitem"><div class="sd"><b>Wall &amp; floor tiling</b><small>40 m2 x 38.00</small></div><div class="amt">1,520.00</div></div>
+            <div class="sitem"><div class="sd"><b>Materials</b><small>1 x 300.00</small></div><div class="amt">300.00</div></div>
+            <div class="sitem linked pend"><div class="sd"><b>Labor</b><small>2 days x 260.00?</small></div><div class="amt">520.00</div></div>
+            <div class="stotals">
+              <div class="strow"><span>Subtotal</span><span class="amt">2,340.00</span></div>
+              <div class="strow"><span>VAT 10%</span><span class="amt">234.00</span></div>
+              <div class="strow final"><span>Total</span><span class="amt">$2,574.00</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cmdbar">
+        <div class="field"><i class="ph ph-microphone"></i>Add to this quote, or start a new one...</div>
+        <button class="go"><i class="ph ph-arrow-up"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE -->
+  <div>
+    <div class="mobile">
+      <div class="cap">Mobile · margin collapses to a strip</div>
+      <div class="m-top">
+        <div class="wordmark"><i class="ph ph-lock-key"></i>HushQuote</div>
+        <button class="primbtn"><i class="ph ph-download-simple"></i>PDF</button>
+      </div>
+      <div class="m-strip">
+        <div class="mhead"><span>You said</span><span><i class="ph ph-caret-down"></i></span></div>
+        <span class="seg used">...materials were 300,</span> <span class="seg hot">two days labor</span>
+      </div>
+      <div class="m-sheetwrap">
+        <div class="sheet">
+          <div class="shead">
+            <div class="biz">Iqbal Tiling<small>USD · VAT 10%</small></div>
+            <div class="qno">Q-014<br>13 OCT</div>
+          </div>
+          <div class="to">Prepared for <b>The Hendersons</b></div>
+          <div class="sitem"><div class="sd"><b>Wall &amp; floor tiling</b><small>40 m2 x 38.00</small></div><div class="amt">1,520.00</div></div>
+          <div class="sitem"><div class="sd"><b>Materials</b><small>1 x 300.00</small></div><div class="amt">300.00</div></div>
+          <div class="sitem linked pend"><div class="sd"><b>Labor</b><small>2 days x 260.00?</small></div><div class="amt">520.00</div></div>
+          <div class="stotals">
+            <div class="strow"><span>Subtotal</span><span class="amt">2,340.00</span></div>
+            <div class="strow final"><span>Total</span><span class="amt">$2,574.00</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="m-cmd">
+        <div class="field"><i class="ph ph-microphone"></i>Add to this quote...</div>
+        <button class="go"><i class="ph ph-arrow-up"></i></button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

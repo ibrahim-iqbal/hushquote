@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HushQuote — Cover Gradient Options</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:'Geist',system-ui,sans-serif;background:#E9EAED;color:#15171C;padding:32px;font-size:16px;line-height:1.5}
+  h1{font-size:28px;font-weight:650;letter-spacing:-.02em}
+  .sub{color:#5C6470;margin:4px 0 26px;max-width:72ch}
+  .row{display:flex;gap:24px;flex-wrap:wrap}
+  .opt{width:400px}
+  .opt h3{font-size:15px;font-weight:650;margin-bottom:2px}
+  .opt p{font-size:13px;color:#5C6470;margin-bottom:10px}
+
+  .cover{height:280px;border-radius:14px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 14px 40px rgba(13,22,60,.35)}
+  /* grain on all */
+  .cover::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E")}
+  /* blueprint grid whisper on all */
+  .cover::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 13px, rgba(255,255,255,.04) 13px 14px),
+      repeating-linear-gradient(90deg, transparent 0 13px, rgba(255,255,255,.04) 13px 14px)}
+
+  /* ============ 1. AMBIENT (rings) ============ */
+  .amb{background:
+    radial-gradient(circle at 30% 115%, transparent 118px, rgba(132,156,250,.38) 119px, transparent 121px),
+    radial-gradient(circle at 30% 115%, transparent 160px, rgba(120,146,248,.33) 161px, transparent 164px),
+    radial-gradient(circle at 30% 115%, transparent 205px, rgba(107,133,242,.28) 206px, transparent 210px),
+    radial-gradient(circle at 30% 115%, transparent 252px, rgba(99,124,238,.23) 253px, transparent 258px),
+    radial-gradient(circle at 30% 115%, transparent 300px, rgba(90,115,232,.19) 301px, transparent 307px),
+    radial-gradient(circle at 30% 115%, transparent 350px, rgba(82,106,226,.15) 351px, transparent 358px),
+    radial-gradient(circle at 30% 115%, transparent 402px, rgba(74,97,220,.12) 403px, transparent 411px),
+    radial-gradient(420px 320px at 30% 115%, rgba(107,133,242,.5), transparent 70%),
+    radial-gradient(600px 400px at 85% -10%, rgba(43,75,215,.45), transparent 65%),
+    linear-gradient(160deg,#20368F 0%,#1B2D77 55%,#141F55 100%)}
+
+  /* ============ 2. BLUE SKY ============ */
+  .sky{background:
+    radial-gradient(360px 150px at 22% 30%, rgba(255,255,255,.34), transparent 65%),
+    radial-gradient(300px 120px at 60% 18%, rgba(227,234,255,.3), transparent 60%),
+    radial-gradient(420px 170px at 78% 58%, rgba(197,211,255,.26), transparent 62%),
+    radial-gradient(340px 150px at 38% 80%, rgba(166,186,252,.22), transparent 60%),
+    radial-gradient(700px 420px at 50% 110%, rgba(30,55,168,.55), transparent 70%),
+    linear-gradient(175deg,#4A68E4 0%,#2B4BD7 48%,#1B2D77 100%)}
+
+  /* ============ 3. GLACIER (prism streaks) ============ */
+  .gla{background:
+    linear-gradient(92deg, transparent 6%, rgba(173,192,255,.30) 11%, transparent 18%),
+    linear-gradient(90deg, transparent 20%, rgba(140,163,250,.26) 27%, transparent 37%),
+    linear-gradient(93deg, transparent 38%, rgba(203,215,255,.22) 46%, transparent 55%),
+    linear-gradient(91deg, transparent 57%, rgba(120,146,248,.24) 66%, transparent 76%),
+    linear-gradient(92deg, transparent 74%, rgba(173,192,255,.18) 84%, transparent 94%),
+    radial-gradient(760px 300px at 50% -16%, rgba(107,133,242,.4), transparent 68%),
+    linear-gradient(115deg,#24398F 0%,#1D3180 52%,#15235E 100%)}
+
+  .cmark{width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;color:#fff;font-size:21px;position:relative;z-index:2;box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+  .cover h2{color:#fff;font-size:24px;font-weight:650;letter-spacing:-.02em;margin:13px 0 4px;position:relative;z-index:2}
+  .tag{color:rgba(255,255,255,.72);font-size:13.5px;position:relative;z-index:2}
+  .load{margin-top:22px;width:210px;position:relative;z-index:2}
+  .lbar{height:4px;border-radius:2px;background:rgba(255,255,255,.18);overflow:hidden}
+  .lbar i{display:block;height:100%;width:62%;border-radius:2px;background:#fff}
+  .lmeta{display:flex;justify-content:space-between;font-family:'Geist Mono',monospace;font-size:10.5px;color:rgba(255,255,255,.65);margin-top:7px}
+</style>
+</head>
+<body>
+<h1>Cover gradient options</h1>
+<p class="sub">The three FeralUI gallery directions, rebuilt in HushQuote cobalt (#141F55 to #6B85F2), with the grain + blueprint grid they'd ship with. Production asset gets exported from the FeralUI editor in these hues.</p>
+
+<div class="row">
+  <div class="opt">
+    <h3>1 · Ambient (rings)</h3>
+    <p>Concentric waves radiating from the corner. Reads as sound — a voice product's cover.</p>
+    <div class="cover amb">
+      <div class="cmark"><i class="ph ph-lock-key"></i></div>
+      <h2>HushQuote</h2>
+      <div class="tag">Quotes that stay yours.</div>
+      <div class="load"><div class="lbar"><i></i></div><div class="lmeta"><span>getting the model</span><span>162 / 260 MB</span></div></div>
+    </div>
+  </div>
+
+  <div class="opt">
+    <h3>2 · Blue sky</h3>
+    <p>Painterly clouds, bright and friendly. Least technical of the three.</p>
+    <div class="cover sky">
+      <div class="cmark"><i class="ph ph-lock-key"></i></div>
+      <h2>HushQuote</h2>
+      <div class="tag">Quotes that stay yours.</div>
+      <div class="load"><div class="lbar"><i></i></div><div class="lmeta"><span>getting the model</span><span>162 / 260 MB</span></div></div>
+    </div>
+  </div>
+
+  <div class="opt">
+    <h3>3 · Glacier (prism)</h3>
+    <p>Icy horizontal light streaks. Coolest, most architectural.</p>
+    <div class="cover gla">
+      <div class="cmark"><i class="ph ph-lock-key"></i></div>
+      <h2>HushQuote</h2>
+      <div class="tag">Quotes that stay yours.</div>
+      <div class="load"><div class="lbar"><i></i></div><div class="lmeta"><span>getting the model</span><span>162 / 260 MB</span></div></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

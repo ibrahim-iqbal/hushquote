@@ -9,12 +9,12 @@ You are building **HushQuote** for the DEV Hacktoberfest Week 2 challenge ("Side
 4. `UI.md` — binding design contract (tokens, The Margin layout, cover spec, D4 polish gate)
 5. `RISKS.md` — each risk's mitigation ladder + kill-switch; consult when something fails
 
-Reference artifacts:
-- `mockup-v5-splash.html` — the Cover Page, exact markup/CSS to port (uses `cover-cobalt-pearl.png`, keep the file)
-- `mockup-v6-responsive.html` — the workspace (Margin + Sheet + Command bar), responsive at 900px, exact markup/CSS to port
-- `cover-cobalt-pearl.png` — production cover asset (real FeralUI export; credit "gradient generated with FeralUI" in README)
+Reference artifacts (now in `docs/design/`, ported into the app already as of D1):
+- `docs/design/mockup-v5-splash.html` — the Cover Page, markup/CSS already ported into `src/components/CoverPage.jsx`
+- `docs/design/mockup-v6-responsive.html` — the workspace, already ported into TopBar/MarginRail/Sheet/CommandBar
+- `docs/design/cover-cobalt-pearl.png` — reference copy; the production asset the app actually serves lives at `public/cover-cobalt-pearl.png`
 
-`archive/` = superseded iterations + brainstorm history. NEVER read it; it will confuse you.
+`docs/design/archive/` = superseded iterations + brainstorm history. NEVER read it; it will confuse you.
 
 ## What the product is (one paragraph)
 One living document, not screens. User speaks/types a job description into a bottom command bar; a local Gemma model (wllama V3, in-browser) extracts line items onto an always-visible quote Sheet; the raw transcript lives in a Margin rail and every line item links to the phrase that produced it; totals are computed by app code (never the model); PDF export client-side. No backend, no accounts. Privacy IS the product.

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HushQuote v4 — Blueprint Pop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+  :root{
+    --bg:#F4F5F7; --surface:#FFFFFF; --ink:#15171C; --muted:#5C6470; --line:#E3E6EB;
+    --accent:#2B4BD7; --accent-2:#1E37A8; --accent-hi:#6B85F2; --accent-soft:#E9EDFB;
+    --pending:#F0F1F4;
+    --shadow:0 1px 2px rgba(21,23,28,.05), 0 2px 8px rgba(21,23,28,.04);
+    --sheet-shadow:0 2px 6px rgba(21,23,28,.06), 0 16px 48px rgba(21,23,28,.10);
+    --mono:'Geist Mono',monospace;
+    --grad-btn:linear-gradient(180deg,#3558E8 0%,#2B4BD7 55%,#2440BE 100%);
+    --grad-edge:linear-gradient(90deg,#1E37A8,#2B4BD7 35%,#6B85F2 75%,#2B4BD7);
+  }
+  *{box-sizing:border-box;margin:0}
+  body{font-family:'Geist',system-ui,sans-serif;background:#E9EAED;color:var(--ink);padding:32px;font-size:16px;line-height:1.5}
+  h1{font-size:28px;font-weight:650;letter-spacing:-.02em}
+  .sub{color:#5C6470;margin:4px 0 26px;max-width:76ch}
+  .frames{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start}
+
+  .desktop{width:860px;height:620px;background:var(--bg);border-radius:14px;box-shadow:0 10px 36px rgba(21,23,28,.14);border:1px solid rgba(21,23,28,.07);overflow:hidden;display:flex;flex-direction:column;position:relative}
+  /* 1) binder edge gradient */
+  .binder{height:4px;background:var(--grad-edge);flex:none}
+  .cap{font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#8B93A1;text-align:center;padding:8px;background:rgba(21,23,28,.03);border-bottom:1px solid rgba(21,23,28,.05)}
+  /* 2) corner wash */
+  .desktop::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(640px 300px at 0% 0%, rgba(43,75,215,.05), transparent 60%)}
+
+  .topbar{display:flex;align-items:flex-end;justify-content:space-between;padding:14px 26px 0}
+  .wordmark{font-weight:650;font-size:15px;padding-bottom:12px;display:flex;align-items:center;gap:7px}
+  .wordmark .mark{width:22px;height:22px;border-radius:6px;background:var(--grad-btn);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+  .foldertab{display:flex;align-items:center;gap:10px;background:linear-gradient(180deg,#FDFDFE, #F7F8FB);border:1px solid var(--line);border-bottom:none;border-radius:10px 10px 0 0;padding:9px 16px;font-size:13.5px;font-weight:550;box-shadow:var(--shadow)}
+  .foldertab small{font-family:var(--mono);color:var(--muted);font-weight:400;font-size:12px}
+  .topactions{display:flex;gap:8px;padding-bottom:10px}
+  .ghostbtn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 13px;font-size:13px;font-weight:550;font-family:inherit;display:flex;gap:6px;align-items:center}
+  .primbtn{background:var(--grad-btn);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;font-family:inherit;display:flex;gap:6px;align-items:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.22), 0 1px 2px rgba(30,55,168,.3)}
+
+  .work{flex:1;display:flex;min-height:0;border-top:1px solid var(--line);background:var(--surface)}
+  /* 3) graph-paper margin */
+  .margin{width:252px;border-right:1px solid var(--line);padding:18px;display:flex;flex-direction:column;gap:10px;background:
+    linear-gradient(rgba(244,245,247,.92),rgba(244,245,247,.92)),
+    repeating-linear-gradient(0deg, transparent 0 11px, rgba(43,75,215,.07) 11px 12px),
+    repeating-linear-gradient(90deg, transparent 0 11px, rgba(43,75,215,.07) 11px 12px)}
+  .mhead{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+  .said{font-family:var(--mono);font-size:12.5px;line-height:1.9;color:var(--muted)}
+  .said .seg.used{color:var(--ink);border-bottom:1.5px solid var(--line)}
+  .said .seg.hot{color:var(--accent);border-bottom:1.5px solid var(--accent);background:var(--accent-soft)}
+  .margin .note{margin-top:auto;font-size:12px;color:var(--muted);line-height:1.5;display:flex;gap:7px}
+  .margin .note i{color:var(--accent);font-size:14px;margin-top:1px}
+
+  .sheetwrap{flex:1;padding:22px 30px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:
+    repeating-linear-gradient(0deg, transparent 0 23px, rgba(21,23,28,.015) 23px 24px)}
+
+  /* ===== EMPTY STATE: blueprint illustration ===== */
+  .empty{max-width:440px;text-align:center}
+  .blueprint{width:300px;height:210px;margin:0 auto 20px;border-radius:10px;position:relative;
+    background:
+      radial-gradient(420px 260px at 50% 0%, rgba(107,133,242,.14), transparent 70%),
+      linear-gradient(180deg,#20368F 0%,#1D3180 100%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.14), 0 10px 30px rgba(30,55,168,.25);overflow:hidden}
+  .blueprint::before{content:"";position:absolute;inset:0;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 13px, rgba(255,255,255,.07) 13px 14px),
+      repeating-linear-gradient(90deg, transparent 0 13px, rgba(255,255,255,.07) 13px 14px)}
+  .blueprint svg{position:relative;width:100%;height:100%}
+  .empty h3{font-size:21px;font-weight:650;letter-spacing:-.02em;margin-bottom:6px}
+  .empty p{color:var(--muted);font-size:14.5px;margin-bottom:14px}
+  .chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .chip{font-size:13.5px;padding:8px 13px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--muted);font-weight:500;box-shadow:var(--shadow)}
+
+  .cmdbar{border-top:1px solid var(--line);background:var(--surface);padding:12px 26px;display:flex;gap:12px;align-items:center;position:relative}
+  .cmdbar .field{flex:1;display:flex;align-items:center;gap:11px;border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;font-size:14.5px;color:var(--muted);background:var(--bg)}
+  .cmdbar .field i{color:var(--accent);font-size:19px}
+  .cmdbar .go{background:var(--grad-btn);color:#fff;border:none;border-radius:10px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:inset 0 1px 0 rgba(255,255,255,.22), 0 1px 3px rgba(30,55,168,.35)}
+</style>
+</head>
+<body>
+<h1>HushQuote v4 · Blueprint pop</h1>
+<p class="sub">Three structural pops, zero blobs: (1) cobalt binder-edge gradient along the top, (2) graph-paper texture in the margin rail, (3) empty state = a blueprint panel with single-stroke technical illustration. Buttons get a crisp vertical gradient + inner highlight for tactility. Filled-state frames stay exactly as v3.</p>
+
+<div class="frames">
+  <div class="desktop">
+    <div class="binder"></div>
+    <div class="cap">Desktop · first-run empty state</div>
+    <div class="topbar">
+      <div class="wordmark"><span class="mark"><i class="ph ph-lock-key"></i></span>HushQuote</div>
+      <div class="foldertab"><span>New quote</span><small>draft</small></div>
+      <div class="topactions">
+        <button class="ghostbtn"><i class="ph ph-gear-six"></i>Your rates</button>
+        <button class="primbtn" style="opacity:.45"><i class="ph ph-download-simple"></i>PDF</button>
+      </div>
+    </div>
+    <div class="work">
+      <div class="margin">
+        <div class="mhead">You said <i class="ph ph-waveform"></i></div>
+        <div class="said" style="color:var(--muted);font-style:normal">Nothing yet. Your words land here, and every quote line points back to them.</div>
+        <div class="note"><i class="ph ph-lock-key"></i>Everything is processed on this device. Nothing is uploaded.</div>
+      </div>
+      <div class="sheetwrap">
+        <div class="empty">
+          <div class="blueprint">
+            <svg viewBox="0 0 300 210" fill="none" stroke="#ADC0FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <!-- quote sheet outline -->
+              <rect x="92" y="34" width="116" height="146" rx="3"/>
+              <line x1="104" y1="56" x2="160" y2="56" stroke-width="2.4"/>
+              <line x1="104" y1="76" x2="196" y2="76"/>
+              <line x1="104" y1="92" x2="180" y2="92"/>
+              <line x1="104" y1="108" x2="188" y2="108"/>
+              <rect x="104" y="128" width="92" height="0.1"/>
+              <line x1="104" y1="150" x2="196" y2="150" stroke-width="2.4"/>
+              <text x="166" y="166" font-family="Geist Mono" font-size="11" fill="#ADC0FF" stroke="none" text-anchor="end">2,574.00</text>
+              <!-- dimension marks -->
+              <line x1="70" y1="34" x2="70" y2="180" stroke-dasharray="3 5" stroke-width="1"/>
+              <line x1="64" y1="34" x2="76" y2="34" stroke-width="1"/>
+              <line x1="64" y1="180" x2="76" y2="180" stroke-width="1"/>
+              <!-- waveform entering the sheet -->
+              <path d="M18 108 h10 M34 100 v16 M44 92 v32 M54 100 v16 M64 96 v24 M74 104 v8" stroke-width="2"/>
+              <path d="M80 108 H 92" stroke-dasharray="2 4" stroke-width="1.4"/>
+              <!-- pencil -->
+              <path d="M226 64 l26 -26 m-26 26 l-5 13 13 -5 m-8 -8 l18 -18" stroke-width="1.6"/>
+            </svg>
+          </div>
+          <h3>Say the job. Get the quote.</h3>
+          <p>Describe it like you'd tell a mate. The model typesets it onto the sheet.</p>
+          <div class="chips"><span class="chip">bathroom tiling</span><span class="chip">logo package</span><span class="chip">garden cleanup</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="cmdbar">
+      <div class="field"><i class="ph ph-microphone"></i>Tiled the Hendersons' bathroom, about 40 square meters...</div>
+      <button class="go"><i class="ph ph-arrow-up"></i></button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

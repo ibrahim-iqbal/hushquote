@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HushQuote v2 — Workwear Cobalt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+  :root{
+    --bg:#F4F5F7; --surface:#FFFFFF; --ink:#15171C; --muted:#5C6470; --line:#E3E6EB;
+    --accent:#2B4BD7; --accent-ink:#1E37A8; --accent-soft:#E9EDFB;
+    --pending:#F0F1F4; --danger:#C0392B;
+    --shadow:0 1px 2px rgba(21,23,28,.05), 0 2px 8px rgba(21,23,28,.04);
+    --mono:'Geist Mono',monospace;
+  }
+  .dark{
+    --bg:#101216; --surface:#181B21; --ink:#E9EBEF; --muted:#8B93A1; --line:#272B33;
+    --accent:#6B85F2; --accent-ink:#8BA0F6; --accent-soft:#1D2440; --pending:#1E222A;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{font-family:'Geist',system-ui,sans-serif;background:#E9EAED;color:var(--ink);padding:32px;font-size:16px;line-height:1.5}
+  h1{font-size:28px;font-weight:650;letter-spacing:-.02em}
+  .sub{color:#5C6470;margin:4px 0 28px;max-width:62ch}
+  .board{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+
+  .tokens{background:#fff;border-radius:14px;padding:24px;box-shadow:var(--shadow);width:330px}
+  .tokens h2{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:#5C6470;margin:0 0 12px;font-weight:600}
+  .tokens h2 + .tokens h2{margin-top:20px}
+  .swatches{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:20px}
+  .sw{border-radius:8px;padding:10px;font-size:12px;font-weight:500;border:1px solid #E3E6EB}
+  .type-row{margin-bottom:10px}
+  .type-row small{display:block;color:#5C6470;font-size:11px;margin-top:1px}
+  .icons{display:flex;gap:16px;margin-top:6px;font-size:22px;color:#15171C}
+
+  .phone{width:340px;background:var(--bg);border-radius:22px;box-shadow:0 10px 32px rgba(21,23,28,.13);overflow:hidden;border:1px solid rgba(21,23,28,.07)}
+  .phone .label{font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#8B93A1;text-align:center;padding:9px;background:rgba(21,23,28,.03);border-bottom:1px solid rgba(21,23,28,.05)}
+  .screen{padding:20px;min-height:620px;display:flex;flex-direction:column;background:var(--bg);color:var(--ink)}
+
+  .stepper{display:flex;gap:7px;align-items:center;font-size:13px;font-weight:500;color:var(--muted);margin-bottom:22px}
+  .stepper .on{color:var(--accent);font-weight:650}
+  .stepper .tick{color:var(--accent)}
+  .stepper .dot{width:3px;height:3px;border-radius:50%;background:var(--line)}
+
+  .h-screen{font-size:24px;line-height:30px;font-weight:650;letter-spacing:-.02em;margin-bottom:6px}
+  .hint{color:var(--muted);font-size:14.5px;margin-bottom:18px}
+
+  .inputbox{position:relative;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:16px;min-height:168px;font-size:16px;line-height:1.55;box-shadow:var(--shadow)}
+  .inputbox:focus-within{border-color:var(--accent)}
+  .mic{position:absolute;right:12px;bottom:12px;width:44px;height:44px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:20px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .chip{font-size:13.5px;padding:8px 13px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--muted);font-weight:500}
+
+  .modelnote{margin-top:auto;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;box-shadow:var(--shadow)}
+  .modelnote i{color:var(--accent);font-size:16px;margin-top:1px}
+  .modelnote b{color:var(--ink);font-weight:550}
+  .bar{height:4px;background:var(--pending);border-radius:2px;margin-top:8px;overflow:hidden}
+  .bar i{display:block;height:100%;width:62%;background:var(--accent);border-radius:2px}
+  .bar-meta{font-family:var(--mono);font-size:11px;margin-top:5px;color:var(--muted)}
+
+  .cta{margin-top:14px;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:15px;width:100%;font-size:15.5px;font-weight:600;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px}
+  .cta:active{transform:translateY(1px)}
+  .quietrow{display:flex;gap:10px;margin-top:10px}
+  .quiet{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--surface);color:var(--ink);font-weight:550;font-size:14px;font-family:inherit;flex:1}
+
+  .doc{background:var(--surface);border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--line);overflow:hidden;font-size:14.5px}
+  .doc-head{padding:15px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline}
+  .doc-head b{font-size:15.5px;font-weight:650}
+  .doc-head small{color:var(--muted);font-size:12.5px}
+  .li{display:flex;justify-content:space-between;gap:10px;padding:12px 16px;align-items:center}
+  .li + .li{border-top:1px solid var(--line)}
+  .li .d b{font-weight:550;font-size:14.5px;display:block}
+  .li .d small{color:var(--muted);font-size:12.5px;font-family:var(--mono)}
+  .num{font-family:var(--mono);font-weight:500;font-size:14px}
+  .est{border-top:1px solid var(--line);background:var(--pending)}
+  .est-inner{margin:10px;border:1.5px dashed var(--muted);border-radius:8px;padding:10px 12px}
+  .est .tag{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px}
+  .est .d b{display:block;font-weight:550;font-size:14.5px}
+  .est .row{display:flex;justify-content:space-between;align-items:center}
+  .confirm{font-size:12.5px;font-weight:600;color:var(--accent);margin-top:7px;display:inline-flex;align-items:center;gap:4px}
+  .addrow{margin:10px 14px;border:1.5px dashed var(--line);border-radius:8px;padding:10px;text-align:center;color:var(--muted);font-size:13.5px;font-weight:500}
+  .totals{padding:13px 16px;border-top:1px solid var(--line)}
+  .trow{display:flex;justify-content:space-between;font-size:13.5px;color:var(--muted);padding:2px 0}
+  .trow .num{font-size:13.5px}
+  .trow.total{font-size:16px;color:var(--ink);font-weight:650;padding-top:8px}
+  .trow.total .num{font-size:17px;font-weight:600}
+
+  .pdf{background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);padding:18px;font-size:10.5px;line-height:1.5}
+  .pdf .logo{width:26px;height:26px;border-radius:7px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;margin-bottom:8px}
+  .pdf h4{font-size:13px}
+  .pdf .mut{color:var(--muted)}
+  .pdf table{width:100%;border-collapse:collapse;margin-top:9px}
+  .pdf td{padding:4px 0;border-bottom:1px solid var(--line)}
+  .pdf td:last-child{text-align:right;font-family:var(--mono)}
+  .pdf .sum td{border:none;font-weight:700;font-size:11.5px}
+  .profile{display:flex;justify-content:space-between;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin-bottom:14px;font-size:13.5px;box-shadow:var(--shadow)}
+  .profile b{font-size:14px}
+  .profile a{color:var(--accent);font-weight:600;text-decoration:none}
+</style>
+</head>
+<body>
+<h1>HushQuote v2</h1>
+<p class="sub">Workwear cobalt on cool porcelain. Geist + Geist Mono for every number. Phosphor icons. One accent; "estimate" state is structural (dashed + muted), not a second color.</p>
+
+<div class="board">
+
+  <div class="tokens">
+    <h2>Palette</h2>
+    <div class="swatches">
+      <div class="sw" style="background:#F4F5F7">Porcelain #F4F5F7</div>
+      <div class="sw" style="background:#15171C;color:#fff">Ink #15171C</div>
+      <div class="sw" style="background:#2B4BD7;color:#fff">Cobalt #2B4BD7<br><span style="opacity:.85">only accent</span></div>
+      <div class="sw" style="background:#E9EDFB;color:#2B4BD7">Cobalt soft</div>
+      <div class="sw" style="background:#F0F1F4;color:#5C6470;border:1.5px dashed #5C6470">Pending (dashed)</div>
+      <div class="sw" style="background:#5C6470;color:#fff">Muted #5C6470</div>
+    </div>
+    <h2>Type — Geist / Geist Mono</h2>
+    <div class="type-row" style="font-size:28px;font-weight:650;letter-spacing:-.02em">Display 28<small>screen headlines</small></div>
+    <div class="type-row" style="font-size:16px">Body 16 regular<small>inputs, line items</small></div>
+    <div class="type-row" style="font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#5C6470">Label 12 tracked<small>used once per screen, max</small></div>
+    <div class="type-row" style="font-family:'Geist Mono',monospace;font-size:15px">1,240.00 · 40 m2 · 2x<small>Geist Mono, every number on the page</small></div>
+    <h2>Icons — Phosphor, regular weight</h2>
+    <div class="icons">
+      <i class="ph ph-microphone"></i>
+      <i class="ph ph-arrow-right"></i>
+      <i class="ph ph-download-simple"></i>
+      <i class="ph ph-pencil-simple"></i>
+      <i class="ph ph-lock-key"></i>
+      <i class="ph ph-check"></i>
+    </div>
+    <h2>Dark</h2>
+    <div class="swatches">
+      <div class="sw" style="background:#101216;color:#E9EBEF;border-color:#272B33">BG #101216</div>
+      <div class="sw" style="background:#6B85F2;color:#101216">Cobalt #6B85F2</div>
+    </div>
+  </div>
+
+  <!-- DESCRIBE -->
+  <div class="phone">
+    <div class="label">1 · Describe</div>
+    <div class="screen">
+      <div class="stepper"><span class="on">Describe</span><span class="dot"></span><span>Review</span><span class="dot"></span><span>Send</span></div>
+      <div class="h-screen">What's the job?</div>
+      <div class="hint">Say it or type it. Rough is fine.</div>
+      <div class="inputbox">
+        <span>Tiled the Hendersons' bathroom, about 40 square meters, materials were 300, two days labor...</span>
+        <div class="mic"><i class="ph ph-microphone"></i></div>
+      </div>
+      <div class="chips"><span class="chip">bathroom tiling</span><span class="chip">logo package</span><span class="chip">garden cleanup</span></div>
+      <div class="modelnote">
+        <i class="ph ph-lock-key"></i>
+        <div><b>Getting the model.</b> One download, then it lives on your phone. Your jobs and rates never leave it.
+          <div class="bar"><i></i></div>
+          <div class="bar-meta">162 / 260 MB</div>
+        </div>
+      </div>
+      <button class="cta">Build quote <i class="ph ph-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- REVIEW -->
+  <div class="phone">
+    <div class="label">2 · Review</div>
+    <div class="screen">
+      <div class="stepper"><span class="tick"><i class="ph ph-check"></i> Describe</span><span class="dot"></span><span class="on">Review</span><span class="dot"></span><span>Send</span></div>
+      <div class="h-screen">Check the numbers</div>
+      <div class="hint">Tap any line to change it.</div>
+      <div class="doc">
+        <div class="doc-head"><b>The Hendersons</b><small>Bathroom reno</small></div>
+        <div class="li"><div class="d"><b>Wall &amp; floor tiling</b><small>40 m2 x 38.00</small></div><div class="num">1,520.00</div></div>
+        <div class="li"><div class="d"><b>Materials</b><small>1 x 300.00</small></div><div class="num">300.00</div></div>
+        <div class="est">
+          <div class="est-inner">
+            <span class="tag">Estimated. Yours to set.</span>
+            <div class="row"><div class="d"><b>Labor</b><small style="font-family:var(--mono);color:var(--muted);font-size:12.5px">2 days x 260.00?</small></div><div class="num">520.00</div></div>
+            <span class="confirm"><i class="ph ph-check"></i> Use this rate</span>
+          </div>
+        </div>
+        <div class="addrow">+ Add a line</div>
+        <div class="totals">
+          <div class="trow"><span>Subtotal</span><span class="num">2,340.00</span></div>
+          <div class="trow"><span>VAT 10%</span><span class="num">234.00</span></div>
+          <div class="trow total"><span>Total</span><span class="num">$2,574.00</span></div>
+        </div>
+      </div>
+      <button class="cta" style="margin-top:auto">Looks right <i class="ph ph-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- SEND -->
+  <div class="phone">
+    <div class="label">3 · Send</div>
+    <div class="screen">
+      <div class="stepper"><span class="tick"><i class="ph ph-check"></i> Describe</span><span class="dot"></span><span class="tick"><i class="ph ph-check"></i> Review</span><span class="dot"></span><span class="on">Send</span></div>
+      <div class="profile"><div><b>Iqbal Tiling</b><br><span style="color:var(--muted)">USD · VAT 10%</span></div><a href="#">Edit</a></div>
+      <div class="pdf">
+        <div class="logo">IQ</div>
+        <h4>Quote Q-014</h4>
+        <div class="mut">Iqbal Tiling for The Hendersons · 13 Oct 2026</div>
+        <table>
+          <tr><td>Wall &amp; floor tiling, 40 m2</td><td>1,520.00</td></tr>
+          <tr><td>Materials</td><td>300.00</td></tr>
+          <tr><td>Labor, 2 days</td><td>520.00</td></tr>
+          <tr><td class="mut">VAT 10%</td><td class="mut">234.00</td></tr>
+          <tr class="sum"><td>Total</td><td>$2,574.00</td></tr>
+        </table>
+        <div class="mut" style="margin-top:8px">Valid 30 days.</div>
+      </div>
+      <button class="cta" style="margin-top:auto">Download PDF <i class="ph ph-download-simple"></i></button>
+      <div class="quietrow"><button class="quiet">Share</button><button class="quiet">New quote</button></div>
+    </div>
+  </div>
+
+  <!-- DARK -->
+  <div class="phone dark">
+    <div class="label" style="background:rgba(255,255,255,.04);color:#8B93A1;border-color:#272B33">Dark · Review</div>
+    <div class="screen">
+      <div class="stepper"><span class="tick"><i class="ph ph-check"></i> Describe</span><span class="dot" style="background:#272B33"></span><span class="on">Review</span><span class="dot" style="background:#272B33"></span><span>Send</span></div>
+      <div class="h-screen">Check the numbers</div>
+      <div class="hint">Tap any line to change it.</div>
+      <div class="doc">
+        <div class="doc-head"><b>The Hendersons</b><small>Bathroom reno</small></div>
+        <div class="li"><div class="d"><b>Wall &amp; floor tiling</b><small>40 m2 x 38.00</small></div><div class="num">1,520.00</div></div>
+        <div class="est">
+          <div class="est-inner">
+            <span class="tag">Estimated. Yours to set.</span>
+            <div class="row"><div class="d"><b>Labor</b><small style="font-family:var(--mono);color:var(--muted);font-size:12.5px">2 days x 260.00?</small></div><div class="num">520.00</div></div>
+            <span class="confirm"><i class="ph ph-check"></i> Use this rate</span>
+          </div>
+        </div>
+        <div class="totals">
+          <div class="trow"><span>Subtotal</span><span class="num">2,340.00</span></div>
+          <div class="trow total"><span>Total</span><span class="num">$2,574.00</span></div>
+        </div>
+      </div>
+      <button class="cta" style="margin-top:auto">Looks right <i class="ph ph-arrow-right"></i></button>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HushQuote — Design Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAFAF7; --ink:#1A1A18; --muted:#6B6B66; --line:#E4E4DE;
+    --green:#1E6B4E; --green-soft:#E7F1EC; --amber:#B8860B; --amber-soft:#FBF3DF;
+    --danger:#B3372F; --card:#FFFFFF;
+    --shadow:0 1px 3px rgba(0,0,0,.08);
+    --r-card:10px; --r-input:8px;
+  }
+  .dark{
+    --paper:#141412; --ink:#ECECE8; --muted:#9C9C94; --line:#2A2A26;
+    --green:#3C9A76; --green-soft:#1C2E26; --amber:#D4A52C; --amber-soft:#2E2817;
+    --card:#1D1D1A;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{font-family:'Inter',system-ui,sans-serif;background:#ECECE6;color:var(--ink);padding:32px;font-size:16px;line-height:1.5}
+  h1{font-size:28px;line-height:34px;font-weight:650;letter-spacing:-.02em}
+  .sub{color:#6B6B66;margin:4px 0 28px}
+  .board{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start}
+
+  /* ---------- token panel ---------- */
+  .tokens{background:#fff;border-radius:14px;padding:24px;box-shadow:var(--shadow);width:330px}
+  .tokens h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#6B6B66;margin-bottom:14px;font-weight:600}
+  .swatches{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:22px}
+  .sw{border-radius:8px;padding:10px;font-size:12px;font-weight:500;border:1px solid #E4E4DE}
+  .type-row{margin-bottom:10px}
+  .type-row small{display:block;color:#6B6B66;font-size:11px;margin-top:1px}
+  .icons{display:flex;gap:14px;margin-top:8px;color:#1A1A18}
+  .icons svg{width:20px;height:20px}
+
+  /* ---------- phone frames ---------- */
+  .phone{width:340px;background:var(--paper);border-radius:22px;box-shadow:0 8px 28px rgba(0,0,0,.14);overflow:hidden;border:1px solid rgba(0,0,0,.06)}
+  .phone .label{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8a8a82;text-align:center;padding:9px;background:rgba(0,0,0,.028);border-bottom:1px solid rgba(0,0,0,.05)}
+  .screen{padding:20px;min-height:600px;display:flex;flex-direction:column;background:var(--paper);color:var(--ink)}
+
+  /* stepper */
+  .stepper{display:flex;gap:6px;align-items:center;font-size:13px;font-weight:500;color:var(--muted);margin-bottom:22px}
+  .stepper .on{color:var(--ink);font-weight:650}
+  .stepper .dot{width:3px;height:3px;border-radius:50%;background:var(--line)}
+
+  .h-screen{font-size:24px;line-height:30px;font-weight:650;letter-spacing:-.02em;margin-bottom:6px}
+  .hint{color:var(--muted);font-size:14.5px;margin-bottom:18px}
+
+  /* describe */
+  .inputbox{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:16px;min-height:170px;font-size:16px;line-height:1.55;color:var(--ink);box-shadow:var(--shadow)}
+  .inputbox .ph{color:var(--muted)}
+  .mic{position:absolute;right:12px;bottom:12px;width:44px;height:44px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;color:var(--green)}
+  .mic svg{width:20px;height:20px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .chip{font-size:13.5px;padding:8px 13px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--muted);font-weight:500}
+  .modelnote{margin-top:auto;padding:12px 14px;background:var(--green-soft);border-radius:10px;font-size:13px;color:var(--green);display:flex;gap:9px;align-items:flex-start}
+  .modelnote svg{width:15px;height:15px;flex:none;margin-top:2px}
+  .bar{height:4px;background:rgba(30,107,78,.18);border-radius:2px;margin-top:7px;overflow:hidden}
+  .bar i{display:block;height:100%;width:62%;background:var(--green);border-radius:2px}
+
+  /* buttons */
+  .cta{margin-top:14px;background:var(--green);color:#fff;border:none;border-radius:999px;padding:15px;width:100%;font-size:16px;font-weight:600;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:var(--shadow)}
+  .cta svg{width:17px;height:17px}
+  .quiet{margin-top:10px;background:none;color:var(--muted);border:none;padding:8px;width:100%;font-size:14.5px;font-weight:500;font-family:inherit}
+
+  /* review: document card */
+  .doc{background:var(--card);border-radius:var(--r-card);box-shadow:var(--shadow);border:1px solid var(--line);overflow:hidden;font-size:14.5px}
+  .doc-head{padding:15px 16px;border-bottom:1px solid var(--line)}
+  .doc-head b{font-size:15.5px;font-weight:650}
+  .doc-head small{display:block;color:var(--muted);font-size:13px;margin-top:1px}
+  .li{display:flex;justify-content:space-between;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);align-items:center}
+  .li .d{flex:1}
+  .li .d b{font-weight:550;font-size:14.5px;display:block}
+  .li .d small{color:var(--muted);font-size:12.5px}
+  .num{font-variant-numeric:tabular-nums;font-weight:550}
+  .est{border:1.5px dashed var(--amber);background:var(--amber-soft);border-radius:8px;margin:8px;padding:8px 10px}
+  .est .tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--amber);margin-bottom:3px}
+  .est .tag svg{width:11px;height:11px}
+  .addrow{margin:10px 14px;border:1.5px dashed var(--line);border-radius:8px;padding:10px;text-align:center;color:var(--muted);font-size:13.5px;font-weight:500}
+  .totals{padding:13px 16px;background:rgba(0,0,0,.02)}
+  .trow{display:flex;justify-content:space-between;font-size:13.5px;color:var(--muted);padding:2px 0}
+  .trow.total{font-size:16.5px;color:var(--ink);font-weight:650;padding-top:7px}
+
+  /* send */
+  .pdf{background:var(--card);border:1px solid var(--line);border-radius:6px;box-shadow:var(--shadow);padding:18px;font-size:10.5px;line-height:1.5;color:var(--ink);transform:scale(.98)}
+  .pdf .logo{width:26px;height:26px;border-radius:6px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;margin-bottom:8px}
+  .pdf h4{font-size:13px;margin-bottom:1px}
+  .pdf .mut{color:var(--muted)}
+  .pdf table{width:100%;border-collapse:collapse;margin-top:9px}
+  .pdf td{padding:4px 0;border-bottom:1px solid var(--line)}
+  .pdf td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+  .pdf .sum td{border:none;font-weight:700;font-size:11.5px}
+  .profile{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin-bottom:14px;font-size:13.5px}
+  .profile b{font-size:14px}
+  .profile a{color:var(--green);font-weight:600;text-decoration:none;font-size:13.5px}
+  .row2{display:flex;gap:10px;margin-top:10px}
+  .row2 .quiet{margin:0;border:1px solid var(--line);border-radius:999px;padding:11px;background:var(--card);color:var(--ink);font-weight:550}
+</style>
+</head>
+<body>
+<h1>HushQuote</h1>
+<p class="sub">Design mockup — paper &amp; ink, one green, Inter, lucide icons. "Good stationery, not a dashboard."</p>
+
+<div class="board">
+
+  <!-- TOKEN BOARD -->
+  <div class="tokens">
+    <h2>Palette</h2>
+    <div class="swatches">
+      <div class="sw" style="background:#FAFAF7">Paper #FAFAF7</div>
+      <div class="sw" style="background:#1A1A18;color:#fff">Ink #1A1A18</div>
+      <div class="sw" style="background:#1E6B4E;color:#fff">Green #1E6B4E<br><span style="opacity:.8">primary only</span></div>
+      <div class="sw" style="background:#B8860B;color:#fff">Amber #B8860B<br><span style="opacity:.85">AI estimate</span></div>
+      <div class="sw" style="background:#6B6B66;color:#fff">Muted #6B6B66</div>
+      <div class="sw" style="background:#B3372F;color:#fff">Danger #B3372F</div>
+    </div>
+    <h2>Type — Inter</h2>
+    <div class="type-row" style="font-size:28px;line-height:34px;font-weight:650;letter-spacing:-.02em">Display 28<small>screen headlines</small></div>
+    <div class="type-row" style="font-size:20px;line-height:28px;font-weight:650">Title 20<small>card headers</small></div>
+    <div class="type-row" style="font-size:16px">Body 16 — regular<small>inputs, line items</small></div>
+    <div class="type-row" style="font-size:13px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#6B6B66">Label 13 tracked<small>steppers, chips</small></div>
+    <div class="type-row num" style="font-size:16px;font-variant-numeric:tabular-nums">1,240.00 — tabular nums<small>all money columns</small></div>
+    <h2 style="margin-top:18px">Icons — lucide, 1.5px stroke</h2>
+    <div class="icons">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/></svg>
+    </div>
+    <h2 style="margin-top:18px">Dark mode</h2>
+    <div class="swatches">
+      <div class="sw" style="background:#141412;color:#ECECE8;border-color:#2A2A26">Paper #141412</div>
+      <div class="sw" style="background:#3C9A76;color:#fff">Green #3C9A76</div>
+    </div>
+  </div>
+
+  <!-- SCREEN 1 : DESCRIBE -->
+  <div class="phone">
+    <div class="label">1 · Describe</div>
+    <div class="screen">
+      <div class="stepper"><span class="on">Describe</span><span class="dot"></span><span>Review</span><span class="dot"></span><span>Send</span></div>
+      <div class="h-screen">What's the job?</div>
+      <div class="hint">Say it or type it — rough is fine.</div>
+      <div class="inputbox">
+        <span>Tiled the Hendersons' bathroom, about 40 square meters, materials were 300, two days labor…</span>
+        <div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg></div>
+      </div>
+      <div class="chips"><span class="chip">bathroom tiling job</span><span class="chip">logo design package</span><span class="chip">garden cleanup</span></div>
+      <div class="modelnote">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+        <div>Downloading the brain — 260&nbsp;MB, one time, stays on your device.<div class="bar"><i></i></div></div>
+      </div>
+      <button class="cta">Build quote <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2 : REVIEW -->
+  <div class="phone">
+    <div class="label">2 · Review</div>
+    <div class="screen">
+      <div class="stepper"><span>Describe</span><span class="dot"></span><span class="on">Review</span><span class="dot"></span><span>Send</span></div>
+      <div class="h-screen">Looks right?</div>
+      <div class="hint">Tap anything to change it.</div>
+      <div class="doc">
+        <div class="doc-head"><b>The Hendersons</b><small>Bathroom renovation — Oct 2026</small></div>
+        <div class="li"><div class="d"><b>Wall &amp; floor tiling</b><small>40 m² × 38.00 / m²</small></div><div class="num">1,520.00</div></div>
+        <div class="li"><div class="d"><b>Materials — tiles &amp; adhesive</b><small>1 × 300.00</small></div><div class="num">300.00</div></div>
+        <div class="est">
+          <div class="tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg> estimate — tap to set</div>
+          <div class="li" style="border:none;padding:2px 0"><div class="d"><b>Labor</b><small>2 days × 260.00 / day?</small></div><div class="num">520.00</div></div>
+        </div>
+        <div class="addrow">+ Add a line</div>
+        <div class="totals">
+          <div class="trow"><span>Subtotal</span><span class="num">2,340.00</span></div>
+          <div class="trow"><span>VAT 10%</span><span class="num">234.00</span></div>
+          <div class="trow total"><span>Total</span><span class="num">$2,574.00</span></div>
+        </div>
+      </div>
+      <button class="cta" style="margin-top:auto">Looks right <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3 : SEND -->
+  <div class="phone">
+    <div class="label">3 · Send</div>
+    <div class="screen">
+      <div class="stepper"><span>Describe</span><span class="dot"></span><span>Review</span><span class="dot"></span><span class="on">Send</span></div>
+      <div class="profile"><div><b>Ibrahim's Tiling Co.</b><br><span style="color:var(--muted)">ibiq · +971 · USD</span></div><a href="#">Edit</a></div>
+      <div class="pdf">
+        <div class="logo">I</div>
+        <h4>Quote #Q-2026-014</h4>
+        <div class="mut">Ibrahim's Tiling Co. → The Hendersons · 12 Oct 2026</div>
+        <table>
+          <tr><td>Wall &amp; floor tiling — 40 m²</td><td>1,520.00</td></tr>
+          <tr><td>Materials — tiles &amp; adhesive</td><td>300.00</td></tr>
+          <tr><td>Labor — 2 days</td><td>520.00</td></tr>
+          <tr><td class="mut">VAT 10%</td><td class="mut">234.00</td></tr>
+          <tr class="sum"><td>Total</td><td>$2,574.00</td></tr>
+        </table>
+        <div class="mut" style="margin-top:8px">Valid 30 days · Thank you!</div>
+      </div>
+      <button class="cta" style="margin-top:auto">Download PDF <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button>
+      <div class="row2"><button class="quiet">Share</button><button class="quiet">Start another</button></div>
+    </div>
+  </div>
+
+  <!-- DARK MODE SAMPLE -->
+  <div class="phone dark">
+    <div class="label" style="background:rgba(255,255,255,.04);color:#9C9C94;border-color:#2A2A26">Dark · Review</div>
+    <div class="screen">
+      <div class="stepper"><span>Describe</span><span class="dot" style="background:#2A2A26"></span><span class="on">Review</span><span class="dot" style="background:#2A2A26"></span><span>Send</span></div>
+      <div class="h-screen">Looks right?</div>
+      <div class="hint">Tap anything to change it.</div>
+      <div class="doc">
+        <div class="doc-head"><b>The Hendersons</b><small>Bathroom renovation — Oct 2026</small></div>
+        <div class="li"><div class="d"><b>Wall &amp; floor tiling</b><small>40 m² × 38.00 / m²</small></div><div class="num">1,520.00</div></div>
+        <div class="est">
+          <div class="tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg> estimate — tap to set</div>
+          <div class="li" style="border:none;padding:2px 0"><div class="d"><b>Labor</b><small>2 days × 260.00 / day?</small></div><div class="num">520.00</div></div>
+        </div>
+        <div class="totals">
+          <div class="trow"><span>Subtotal</span><span class="num">2,340.00</span></div>
+          <div class="trow total"><span>Total</span><span class="num">$2,574.00</span></div>
+        </div>
+      </div>
+      <button class="cta" style="margin-top:auto">Looks right <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
