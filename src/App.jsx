@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ModelProvider } from './context/ModelContext'
+import { ModelProvider, useModel } from './context/ModelContext'
 import { QuoteProvider, useQuoteDispatch } from './context/QuoteContext'
 import { ProfileProvider } from './context/ProfileContext'
 import { storageAvailable } from './lib/storage'
@@ -11,18 +11,50 @@ import CommandBar from './components/CommandBar'
 
 function Workspace() {
   const [transcript, setTranscript] = useState('')
+  const [hint, setHint] = useState('')
   const dispatch = useQuoteDispatch()
+  const model = useModel()
 
-  function handleSubmit(text) {
+  async function handleSubmit(text) {
     setTranscript(text)
-    // Day 2: send text through model.extractQuote() and the parse ladder
-    // (docs/ARCHITECTURE.md section 5). Day 1 is manual mode: typing/speaking
-    // fills the Margin so the layout can be seen working end to end, and the
-    // user adds lines themselves on the Sheet below.
+    setHint('')
+
+    if (model.status !== 'ready') {
+      // Model still loading, errored, or this browser never got one
+      // (see docs/ARCHITECTURE.md section 8 failure modes). The app stays
+      // usable either way: the user just adds the line themselves below.
+      setHint("Still getting ready. Add the line below for now.")
+      return
+    }
+
+    const items = await model.extractQuote(text)
+    if (!items || items.length === 0) {
+      setHint("Couldn't auto-build this one. Add lines below.")
+      return
+    }
+    for (const item of items) {
+      dispatch({
+        type: 'ITEM_ADDED',
+        description: item.description,
+        qty: item.qty,
+        unit: item.unit,
+        rate: item.rate,
+        source: item.source,
+      })
+    }
   }
 
   function handleExampleChip(label) {
-    handleSubmit(`${label} job`)
+    const text = `${label} job`
+    if (model.status === 'ready') {
+      handleSubmit(text)
+      return
+    }
+    // Model not ready yet (likely, since loading takes a few seconds) -
+    // the chip must still teach by doing something, per docs/UI.md rule 6,
+    // so seed one clean sample line directly instead of leaving it inert.
+    setTranscript(text)
+    setHint('')
     dispatch({ type: 'ITEM_ADDED', description: label, qty: 1, unit: 'job', rate: null, source: 'user' })
   }
 
@@ -42,8 +74,16 @@ function Workspace() {
           Saving is off in private browsing. Your quote stays for this visit only.
         </div>
       )}
+      {model.status === 'error' && (
+        <div
+          className="shrink-0 px-4 py-1.5 text-center text-xs md:px-[26px]"
+          style={{ background: 'var(--pending)', color: 'var(--muted)' }}
+        >
+          Couldn't load the model on this device. You can still build quotes by hand.
+        </div>
+      )}
       <div className="flex min-h-0 flex-1 flex-col border-t md:flex-row" style={{ borderColor: 'var(--line)', background: 'var(--surface)' }}>
-        <MarginRail transcript={transcript} />
+        <MarginRail transcript={transcript} hint={hint} />
         <Sheet onExampleChip={handleExampleChip} />
       </div>
       <CommandBar onSubmit={handleSubmit} />

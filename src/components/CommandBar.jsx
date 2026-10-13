@@ -1,14 +1,18 @@
 import { useState } from 'react'
-import { Microphone, ArrowUp } from '@phosphor-icons/react'
+import { Microphone, ArrowUp, Stop } from '@phosphor-icons/react'
 import { useSpeechRecognition } from '../lib/useSpeechRecognition'
+import { useModel } from '../context/ModelContext'
 
 export default function CommandBar({ onSubmit, placeholder = 'Say the job, or type it...' }) {
   const [text, setText] = useState('')
+  const model = useModel()
+  const busy = model.status === 'busy'
   const { supported, listening, start, stop } = useSpeechRecognition({
     onResult: (spoken) => setText((prev) => (prev ? `${prev} ${spoken}` : spoken)),
   })
 
   function submit() {
+    if (busy) return
     const trimmed = text.trim()
     if (!trimmed) return
     onSubmit(trimmed)
@@ -39,19 +43,20 @@ export default function CommandBar({ onSubmit, placeholder = 'Say the job, or ty
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && submit()}
-          placeholder={placeholder}
-          className="w-full bg-transparent outline-none"
+          placeholder={busy ? 'Thinking...' : placeholder}
+          disabled={busy}
+          className="w-full bg-transparent outline-none disabled:opacity-60"
           style={{ color: 'var(--ink)' }}
         />
       </div>
       <button
         type="button"
-        onClick={submit}
-        aria-label="Submit"
+        onClick={busy ? model.stop : submit}
+        aria-label={busy ? 'Stop' : 'Submit'}
         className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[10px] text-white"
-        style={{ background: 'var(--grad-btn)' }}
+        style={{ background: busy ? 'var(--danger)' : 'var(--grad-btn)' }}
       >
-        <ArrowUp size={18} />
+        {busy ? <Stop size={16} weight="fill" /> : <ArrowUp size={18} />}
       </button>
     </div>
   )

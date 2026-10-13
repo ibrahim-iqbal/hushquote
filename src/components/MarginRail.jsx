@@ -1,10 +1,14 @@
 // The Margin. See docs/UI.md "The Margin" (v3). Holds the raw transcript.
 // Phrase-to-line-item linking (tap an item, its source phrase lights up)
-// ships Day 2 with real extraction; Day 1 shows the plain transcript.
+// is a later polish pass; Day 2 shows the plain transcript plus the
+// model's state in plain words, per docs/UI.md rule 3.
 
 import { Waveform, LockKey } from '@phosphor-icons/react'
+import { useModel } from '../context/ModelContext'
 
-export default function MarginRail({ transcript }) {
+export default function MarginRail({ transcript, hint }) {
+  const { status } = useModel()
+
   return (
     <div
       className="no-print shrink-0 border-b p-3 md:w-[252px] md:flex md:flex-col md:gap-2.5 md:border-b-0 md:border-r md:p-[18px]"
@@ -18,7 +22,7 @@ export default function MarginRail({ transcript }) {
         className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider"
         style={{ color: 'var(--muted)' }}
       >
-        You said
+        {status === 'busy' ? 'Thinking' : 'You said'}
         <Waveform size={14} />
       </div>
       <div
@@ -27,6 +31,11 @@ export default function MarginRail({ transcript }) {
       >
         {transcript ? transcript : 'Nothing yet. Your words land here, and every quote line will point back to them.'}
       </div>
+      {hint && (
+        <div className="mt-2 text-[12.5px] font-medium" style={{ color: 'var(--accent)' }}>
+          {hint}
+        </div>
+      )}
       <div
         className="mt-auto hidden items-start gap-1.5 pt-6 text-xs leading-relaxed md:flex"
         style={{ color: 'var(--muted)' }}

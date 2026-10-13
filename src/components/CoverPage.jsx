@@ -29,6 +29,13 @@ export default function CoverPage() {
       const t = setTimeout(() => setLifted(true), 250)
       return () => clearTimeout(t)
     }
+    if (status === 'error') {
+      // Model failed to load (unsupported browser, OOM, network). The app
+      // must never gate manual mode on a model that isn't coming, per
+      // docs/ARCHITECTURE.md section 8's failure modes table - lift
+      // immediately, App.jsx shows the "couldn't load" banner underneath.
+      setLifted(true)
+    }
   }, [status])
 
   if (lifted) return null

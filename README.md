@@ -52,6 +52,10 @@ npm install
 npm run dev
 ```
 
+First run downloads the local model (Gemma 3 270M, ~292MB) into
+`public/models/` automatically; see `scripts/fetch-model.mjs`. The model
+file itself is not committed to the repo.
+
 ## License
 
 MIT, see `LICENSE`.

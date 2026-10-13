@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Model weights: fetched at dev/build time by scripts/fetch-model.mjs
+# (predev/prebuild npm hooks), never committed. GGUF is ~292MB, well over
+# GitHub's 100MB per-file limit.
+public/models/*.gguf
