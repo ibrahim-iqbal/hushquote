@@ -60,5 +60,14 @@ export function buildMessages(transcript, rateLibrary = []) {
 
 export const GENERATION_PARAMS = {
   temperature: 0.2,
-  max_tokens: 400,
+  // Bumped from 400 (D4): the 20-transcript sweep (docs/RISKS.md R3) hit
+  // this cap on both the initial and repair generation for at least one
+  // transcript, so neither ever finished the JSON object - a real DEV
+  // article (dev.to/sharpenlee, "Why LLMs return invalid JSON") confirms
+  // this is the dangerous case: a repair pass that just closes brackets
+  // on a truncated response produces syntactically valid but fabricated
+  // JSON. Our parse ladder never does that (zod rejects invalid JSON
+  // outright, no bracket-patching), so the correct fix is giving the
+  // model enough room to actually finish, not patching the output.
+  max_tokens: 600,
 }

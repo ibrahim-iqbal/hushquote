@@ -54,6 +54,32 @@ Speak a job description; a local open-weight model running **entirely in your br
 ## Writing angle for the DEV post (draft thesis)
 "A side hustle can't afford a SaaS stack. HushQuote is what invoicing looks like when the AI is a file you ship, not a service you rent: a 1B-parameter open-weight model, running in the browser, doing one job well — and because it's local, a plumber's client list and day-rates stay on the plumber's phone."
 
+## Competitive landscape (D4 dev.to research, for the D5 post)
+Searched dev.to's Week 2 "Side Hustle" submissions for overlapping ideas.
+Several close neighbors, all freelancer/local-business finance tools:
+**InvoicePilot AI** (Ollama + Qwen2.5 + PaddleOCR + Python/FastAPI backend
++ SQLite), **VaultLedger AI** ("100% local, air-gapped" invoice/finance
+OS), **FreelanceAI** (invoice/receipt sorter, local), **Clausler**
+(air-gapped AI contract auditor). All of them are desktop-process
+architectures: Ollama or a Python backend the user has to install and run
+alongside the app. **HushQuote's actual differentiator is the delivery
+model, not just "runs locally"** - it is the only one of this group that
+is a pure static PWA: no backend, no install, no local server process: the
+model downloads into the browser tab itself (wllama/WASM+WebGPU) and runs
+there. "No install" is a stronger, more verifiable claim than "runs
+locally" when the competition's "local" still means "install and run
+Ollama first." Lead the DEV post with this, not just the privacy angle.
+Also relevant as a citation: dev.to/sharpenlee's "Why LLMs return invalid
+JSON" (see docs/RISKS.md R3's D4 research note) - directly explains and
+confirms the truncation failure mode this project hit and fixed, good
+supporting evidence for the "the LLM extracts, the app calculates"
+section of the post.
+Also noted: the challenge rubric (dev.to challenge id 80) confirms both
+"Best Use of Gemma" and "Best Use of Render" are separate $200 featured
+categories a single project can enter - deploying to Render (still
+blocked, see D1/D4 notes below) is not just infra, it is a second prize
+category on top of Gemma.
+
 ## Decisions log
 - 2026-10-13 (D4, extraction accuracy sweep): Ran all remaining 18 of 20 test transcripts (docs/test/transcripts.md) live, see docs/RISKS.md R3 for the full per-transcript writeup. Headline finding: the single few-shot example's content leaked into 10 of 18 outputs (a fabricated "Callout" line, confirmed NOT caused by the rate library), and twice (transcripts 9, 20) the model either echoed the example verbatim ignoring the real input, or invented a fully priced fake quote for an input with zero numbers in it - a direct violation of "never invent prices." Tried dropping the few-shot example entirely (zero-shot, relying on JSON-schema constrained decoding alone); it fixed both critical cases but introduced a new corruption (literal `"${1}"`/`"+"` in the description field) and worse duplication on one retest. Reverted - shipping the known few-shot behavior, not an unproven swap this close to the deadline. Recommended next step if time allows: deterministic regex co-extraction (RISKS R3 ladder step 3) or testing the 1B model variant, which was always the planned "Smart" opt-in.
 - 2026-10-13 (D4): Polish pass against docs/UI.md's gate, partial. Fixed real bugs found live: (1) dark mode was dead code - `:root[data-theme="dark"]` was never set by anything, nothing read `prefers-color-scheme`; wrapped the same tokens in `@media (prefers-color-scheme: dark)` so the app actually follows the system theme now, verified both ways at 320px. (2) Cover Page privacy pill overflowed past the viewport edge at 320px width (clipped silently by a parent `overflow-hidden`, not a scrollbar - easy to miss); fixed to wrap at narrow widths, stays one line on larger screens. (3) `public/favicon.svg` and the leftover `public/icons.svg` sprite were unrelated template scaffolding (a purple abstract mark + a Bluesky/Discord/GitHub icon sheet), not HushQuote's own mark - replaced with a cobalt LockKey favicon matching docs/UI.md's brand, deleted the stray sprite. Added manifest.webmanifest + apple-touch-icon + OG/Twitter meta (reusing cover-cobalt-pearl.png per README's allowed usage). Keyboard-only tab order and console verified clean; copy re-read against the banned-punctuation list (no em/en dashes in any shipped string).

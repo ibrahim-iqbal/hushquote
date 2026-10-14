@@ -92,12 +92,32 @@ testing whether the 1B model variant doesn't have this failure mode at all
 (it has far more headroom to actually use the schema instead of pattern-
 matching the nearest-looking example).
 
+**D4 external research (dev.to/sharpenlee, "Why LLMs return invalid JSON -
+a language model has no parser"):** independently confirms the mechanism
+behind the zero-shot experiment's transcript 14/20 truncations above - a
+model stream has no concept of "document complete," so `finish_reason:
+length` mid-object is a real, common failure, and a repair pass that just
+closes brackets on a truncated response produces syntactically valid but
+fabricated JSON (the article's own worked example). Checked our parse
+ladder (src/lib/parseModelOutput.js) against this: we don't do that -
+`tryParse` only ever does a strict `JSON.parse` + zod validate, never
+bracket-patches, so a truncated response is correctly rejected rather than
+silently completed with invented values. The one gap it did expose:
+`GENERATION_PARAMS.max_tokens` was 400, tight enough that at least one
+transcript hit the cap on both the initial and repair generation and
+never got a complete object either time. **Fixed**: bumped to 600
+(src/lib/prompt.js) - cheap, no new code path, just gives the model room
+to finish. Retested transcript 14: still fails, but via the FEW_SHOT
+anchoring bug documented above, confirming the two failure modes are
+independent and the token bump doesn't mask or regress the anchoring one.
+
 Mitigation ladder:
 1. Few-shot > instructions at this size - applied, see above. Superseded by the finding above: the single example itself is now the primary bug source, not a pure win.
 2. Rate-library grounding: inject user's known services so the model maps to existing labels instead of inventing. Ruled out as the cause of the "Callout" leak (confirmed by clearing the library and still seeing it) - the real cause is FEW_SHOT, see above.
 3. **Deterministic co-extraction**: cheap regex pass for quantities+units ("40 sqm", "2 days", "$300") runs in parallel; numbers the model drops get offered as suggestion chips in Review. Model misses stop being data loss. **Not implemented** - still the next cheapest lever, now more clearly justified given the leak rate above; parked for post-hackathon or if D4/D5 time remains.
 4. Zod + repair retry (ARCHITECTURE §5) - implemented. Helps on structural failures (transcript 14 zero-shot surrendered cleanly instead of emitting garbage) but does nothing for schema-valid-but-wrong content, which is most of the failures above.
 5. ~~20-transcript test set, only 2 run~~ **done D4, see above.**
+6. **max_tokens 400 to 600** - done D4, see research note above. Addresses truncation-driven surrender, not anchoring.
 Verify: **D4 (this sweep)**. Kill-switch unchanged: flip default to 1B-on-WebGPU / manual-first on WASM; the post honestly reports the tradeoff (good writing material, not a failure) - this sweep's data makes that writeup stronger, not weaker: it is a defensible, measured limitation with a working floor (manual mode, pending-chip UI), not a hidden one.
 
 ## R4 — Schedule (4 days, solo)
