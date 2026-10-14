@@ -94,7 +94,7 @@ body {
 }
 
 /* Motion (docs/UI.md "Motion" row: 150-250ms ease-out, 40ms stagger,
-   hover/active + stream-in rows + step transitions, nothing ambient).
+   hover/active + stream-in rows + step transitions).
    Plays once on mount, so a line item animates in when added but never
    replays on re-render (React keeps the DOM node via item.id as key).
    motion-safe: variants elsewhere in components handle prefers-reduced-motion
@@ -109,8 +109,76 @@ body {
   animation: item-in 220ms ease-out backwards;
 }
 
+/* 2026-10-14 (UX pass): purposeful ambient motion, scoped to moments where
+   the model is actually doing something - never decorative. Each one is
+   tied to real state (status === 'busy', a line's source === 'model'),
+   not applied everywhere, per the user's explicit "purposeful motion
+   only" call against UI.md's anti-AI-slop stance. */
+
+/* Shimmer sweep on a model-sourced (pending) line - the one visual signal
+   that something is AI-provisional vs user-confirmed. Loops slowly;
+   stops the instant a line is confirmed (the element unmounts this class
+   along with the rest of the pending styling). */
+@keyframes pending-shimmer {
+  0% { background-position: -150% 0; }
+  100% { background-position: 250% 0; }
+}
+
+.animate-pending-shimmer {
+  background-image: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(107, 133, 242, 0.16) 45%,
+    rgba(107, 133, 242, 0.28) 50%,
+    rgba(107, 133, 242, 0.16) 55%,
+    transparent 70%
+  );
+  background-size: 250% 100%;
+  animation: pending-shimmer 2.8s ease-in-out infinite;
+}
+
+/* Glow pulse on the waveform icon while the model is actively extracting
+   (status === 'busy') - the moment there's real work happening. */
+@keyframes thinking-glow {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.12); }
+}
+
+.animate-thinking-glow {
+  animation: thinking-glow 1.1s ease-in-out infinite;
+}
+
+/* Glowing ring on the command bar while voice input is actively listening -
+   signals "the mic is live" the same way a recording indicator would. */
+@keyframes listening-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(43, 75, 215, 0.35); }
+  50% { box-shadow: 0 0 0 5px rgba(43, 75, 215, 0.12); }
+}
+
+.animate-listening-ring {
+  animation: listening-ring 1.6s ease-in-out infinite;
+}
+
+/* Slow ambient gradient drift behind the Sheet - not tied to a specific
+   event, but intentionally subtle (low opacity, very slow) rather than
+   decorative mesh/aurora, which UI.md bans. Gives the idle app a sense of
+   being alive instead of a static flat panel. */
+@keyframes sheet-drift {
+  0%, 100% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+}
+
+.animate-sheet-drift {
+  background-size: 180% 180%;
+  animation: sheet-drift 18s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .animate-item-in {
+  .animate-item-in,
+  .animate-pending-shimmer,
+  .animate-thinking-glow,
+  .animate-listening-ring,
+  .animate-sheet-drift {
     animation: none;
   }
 }

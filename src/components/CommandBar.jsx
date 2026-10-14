@@ -25,8 +25,10 @@ export default function CommandBar({ onSubmit, placeholder = 'Say the job, or ty
       style={{ borderColor: 'var(--line)', background: 'var(--surface)', paddingBottom: 'calc(10px + env(safe-area-inset-bottom))' }}
     >
       <div
-        className="flex min-h-12 flex-1 items-center gap-2.5 rounded-[10px] border-[1.5px] px-3 text-[16px]"
-        style={{ borderColor: 'var(--line)', background: 'var(--bg)', color: 'var(--muted)' }}
+        className={`flex min-h-12 flex-1 items-center gap-2.5 rounded-[10px] border-[1.5px] px-3 text-[16px] ${
+          listening ? 'animate-listening-ring' : ''
+        }`}
+        style={{ borderColor: listening ? 'var(--accent)' : 'var(--line)', background: 'var(--bg)', color: 'var(--muted)' }}
       >
         {supported && (
           <button

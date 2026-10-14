@@ -21,11 +21,20 @@ export default function Sheet({ onExampleChip }) {
   const [editingClient, setEditingClient] = useState(false)
   const [clientDraft, setClientDraft] = useState(quote.client?.name ?? '')
 
+  // Ambient drift (motion pass): a faint, slow-moving cobalt wash layered
+  // under the paper-texture gradient, idle life behind the Sheet rather
+  // than a flat static void. Low opacity on purpose - UI.md bans
+  // mesh/aurora gradients as decoration, this is intentionally subtle.
+  const sheetBg = {
+    background:
+      'repeating-linear-gradient(0deg, transparent 0 23px, rgba(21,23,28,.015) 23px 24px), radial-gradient(60% 50% at 30% 20%, rgba(43,75,215,.05), transparent 60%), radial-gradient(50% 45% at 80% 80%, rgba(107,133,242,.04), transparent 60%)',
+  }
+
   if (quote.items.length === 0) {
     return (
       <div
-        className="flex flex-1 items-center justify-center overflow-auto p-4 md:p-[22px_30px]"
-        style={{ background: 'repeating-linear-gradient(0deg, transparent 0 23px, rgba(21,23,28,.015) 23px 24px)' }}
+        className="animate-sheet-drift flex flex-1 items-center justify-center overflow-auto p-4 md:p-[22px_30px]"
+        style={sheetBg}
       >
         <BlueprintEmpty onChipClick={onExampleChip} />
       </div>
@@ -34,11 +43,11 @@ export default function Sheet({ onExampleChip }) {
 
   return (
     <div
-      className="flex-1 overflow-auto p-4 md:p-[22px_30px]"
-      style={{ background: 'repeating-linear-gradient(0deg, transparent 0 23px, rgba(21,23,28,.015) 23px 24px)' }}
+      className="animate-sheet-drift flex flex-1 flex-col overflow-auto p-4 md:p-[22px_30px]"
+      style={sheetBg}
     >
       <div
-        className="mx-auto max-w-[470px] rounded-[4px] border p-5 text-[13.5px] md:p-[28px_30px]"
+        className="mx-auto my-auto w-full max-w-[470px] rounded-[4px] border p-5 text-[13.5px] md:p-[28px_30px]"
         style={{ background: 'var(--surface)', borderColor: 'var(--line)', boxShadow: 'var(--sheet-shadow)' }}
       >
         <div className="flex items-start justify-between gap-2.5 border-b-2 pb-3" style={{ borderColor: 'var(--ink)' }}>

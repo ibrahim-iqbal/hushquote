@@ -23,7 +23,11 @@ export default function MarginRail({ transcript, hint }) {
         style={{ color: 'var(--muted)' }}
       >
         {status === 'busy' ? 'Thinking' : 'You said'}
-        <Waveform size={14} />
+        <Waveform
+          size={14}
+          className={status === 'busy' ? 'animate-thinking-glow' : undefined}
+          style={status === 'busy' ? { color: 'var(--accent)' } : undefined}
+        />
       </div>
       <div
         className="mt-1.5 line-clamp-2 font-mono text-[12.5px] leading-[1.9] md:line-clamp-none"

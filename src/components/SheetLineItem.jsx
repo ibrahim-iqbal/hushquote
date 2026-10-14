@@ -96,7 +96,7 @@ export default function SheetLineItem({ item, animationDelay = 0 }) {
       className={`animate-item-in motion-safe:transition-colors motion-safe:duration-200 ${pending ? 'rounded-lg border-t-0' : 'border-t'}`}
       style={{ animationDelay: `${animationDelay}ms`, ...(pending ? { background: 'var(--pending)' } : { borderColor: 'var(--line)' }) }}
     >
-      <div className={pending ? 'm-2.5 rounded-lg border-[1.5px] border-dashed p-2.5' : 'flex items-baseline justify-between gap-3 py-2.5'}
+      <div className={pending ? 'm-2.5 rounded-lg border-[1.5px] border-dashed p-2.5 animate-pending-shimmer' : 'flex items-baseline justify-between gap-3 py-2.5'}
            style={pending ? { borderColor: 'var(--muted)' } : undefined}>
         {pending && (
           <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide" style={{ color: 'var(--muted)' }}>

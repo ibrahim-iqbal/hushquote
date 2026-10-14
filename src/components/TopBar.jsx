@@ -1,12 +1,28 @@
 import { useEffect, useState } from 'react'
-import { LockKey, DownloadSimple, PencilSimple, SunDim, MoonStars } from '@phosphor-icons/react'
-import { useQuote } from '../context/QuoteContext'
+import { LockKey, DownloadSimple, PencilSimple, SunDim, MoonStars, Plus } from '@phosphor-icons/react'
+import { useQuote, useQuoteDispatch } from '../context/QuoteContext'
 import { getEffectiveTheme, setTheme } from '../lib/theme'
 
 export default function TopBar({ onDownloadPdf, onEditProfile }) {
   const quote = useQuote()
+  const dispatch = useQuoteDispatch()
   const hasClient = Boolean(quote.client?.name)
+  const hasItems = quote.items.length > 0
   const [theme, setThemeState] = useState(getEffectiveTheme)
+
+  function handleNewQuote() {
+    // Only one quote exists in storage at a time (docs/PLAN.md flags this
+    // as a known scope limit - no history, no multi-quote support), so
+    // this is destructive: confirm before wiping the current one. Skip
+    // the confirm when there's nothing to lose.
+    if (!hasItems && !hasClient) {
+      dispatch({ type: 'RESET' })
+      return
+    }
+    if (window.confirm('Start a new quote? This clears the current one.')) {
+      dispatch({ type: 'RESET' })
+    }
+  }
 
   useEffect(() => {
     // Picks up the system preference if the user never touched the toggle -
@@ -51,6 +67,15 @@ export default function TopBar({ onDownloadPdf, onEditProfile }) {
         <div className="flex gap-2 pb-2">
           <button
             type="button"
+            onClick={handleNewQuote}
+            aria-label="Start a new quote"
+            className="flex min-h-9 items-center justify-center rounded-lg border px-2.5 motion-safe:transition-[background-color,transform] motion-safe:duration-150 hover:bg-[var(--accent-soft)] motion-safe:active:scale-95"
+            style={{ borderColor: 'var(--line)', color: 'var(--muted)' }}
+          >
+            <Plus size={16} />
+          </button>
+          <button
+            type="button"
             onClick={toggleTheme}
             aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
             className="flex min-h-9 items-center justify-center rounded-lg border px-2.5 motion-safe:transition-[background-color,transform] motion-safe:duration-150 hover:bg-[var(--accent-soft)] motion-safe:active:scale-95"
@@ -70,7 +95,9 @@ export default function TopBar({ onDownloadPdf, onEditProfile }) {
           <button
             type="button"
             onClick={onDownloadPdf}
-            className="flex min-h-9 items-center gap-1.5 rounded-lg px-3.5 py-2 text-[13px] font-semibold text-white motion-safe:transition-[filter,transform] motion-safe:duration-150 hover:brightness-110 motion-safe:active:scale-95"
+            disabled={!hasItems}
+            aria-label={hasItems ? 'Download PDF' : 'Add a line before downloading a PDF'}
+            className="flex min-h-9 items-center gap-1.5 rounded-lg px-3.5 py-2 text-[13px] font-semibold text-white motion-safe:transition-[filter,transform,opacity] motion-safe:duration-150 enabled:hover:brightness-110 enabled:motion-safe:active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
             style={{ background: 'var(--grad-btn)' }}
           >
             <DownloadSimple size={16} />
