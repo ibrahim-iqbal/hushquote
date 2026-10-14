@@ -2,41 +2,48 @@
 // Real FeralUI export (cover-cobalt-pearl.png), content anchored in the
 // upper dark third, lifts open when the model is ready.
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import { LockKey } from '@phosphor-icons/react'
 import { useModel } from '../context/ModelContext'
 
+const reducedMotionQuery = '(prefers-reduced-motion: reduce)'
+
+function subscribeToReducedMotion(callback) {
+  const mq = window.matchMedia(reducedMotionQuery)
+  mq.addEventListener('change', callback)
+  return () => mq.removeEventListener('change', callback)
+}
+
+function getReducedMotionSnapshot() {
+  return window.matchMedia(reducedMotionQuery).matches
+}
+
+// Syncs an external browser API (matchMedia) into React state without the
+// extra "set state in an effect" render pass — see
+// https://react.dev/reference/react/useSyncExternalStore
 function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false)
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setReduced(mq.matches)
-    const handler = (e) => setReduced(e.matches)
-    mq.addEventListener('change', handler)
-    return () => mq.removeEventListener('change', handler)
-  }, [])
-  return reduced
+  return useSyncExternalStore(subscribeToReducedMotion, getReducedMotionSnapshot)
 }
 
 export default function CoverPage() {
   const { status, progress, downloadedMb, totalMb } = useModel()
   const reducedMotion = usePrefersReducedMotion()
-  const [lifted, setLifted] = useState(false)
+  // Only the "ready" path needs a timer (a small beat so the 100% state is
+  // visible before lifting); the error path lifts the same render it occurs
+  // in, so it's derived directly instead of round-tripping through state.
+  const [liftedAfterReady, setLiftedAfterReady] = useState(false)
 
   useEffect(() => {
-    if (status === 'ready') {
-      // small beat before lifting so the 100% state is visible
-      const t = setTimeout(() => setLifted(true), 250)
-      return () => clearTimeout(t)
-    }
-    if (status === 'error') {
-      // Model failed to load (unsupported browser, OOM, network). The app
-      // must never gate manual mode on a model that isn't coming, per
-      // docs/ARCHITECTURE.md section 8's failure modes table - lift
-      // immediately, App.jsx shows the "couldn't load" banner underneath.
-      setLifted(true)
-    }
+    if (status !== 'ready') return
+    const t = setTimeout(() => setLiftedAfterReady(true), 250)
+    return () => clearTimeout(t)
   }, [status])
+
+  // Model failed to load (unsupported browser, OOM, network). The app must
+  // never gate manual mode on a model that isn't coming, per
+  // docs/ARCHITECTURE.md section 8's failure modes table - lift immediately,
+  // App.jsx shows the "couldn't load" banner underneath.
+  const lifted = liftedAfterReady || status === 'error'
 
   if (lifted) return null
 

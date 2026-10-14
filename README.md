@@ -20,10 +20,11 @@ anything inline, set up a business profile with a logo and a rate library,
 and export a PDF via the browser's print dialog. Manual mode (no model
 needed) works end to end on its own as a fallback floor.
 
-See `docs/PLAN.md` for the full day-by-day build log and decisions,
-`docs/RISKS.md` for the honest extraction-accuracy writeup (a full
-20-transcript test sweep, not just a couple of happy-path runs), and
-`docs/UI.md` for the design contract.
+See [`docs/README.md`](docs/README.md) for the full docs index. Start with
+`docs/PLAN.md` for the day-by-day build log and decisions, `docs/RISKS.md`
+for the honest extraction-accuracy writeup (a full 20-transcript test
+sweep, not just a couple of happy-path runs), and `docs/UI.md` for the
+design contract.
 
 ## Why local AI
 
@@ -67,11 +68,28 @@ to real state, not decoration - see the D4 UX-pass entries in
 
 ![Flow: mic or text input through Gemma 3 270M, JSON-schema validation, one repair retry, and either a confirmed sheet line or a fallback to manual mode](docs/design/post-screenshots/extraction-flow.png)
 
+## Project structure
+
+```
+src/
+  components/   UI (Margin, Sheet, Command Bar, Cover Page, Profile Drawer, Top Bar)
+  context/      React context + reducer state (quote, profile, rates, model)
+  lib/          Pure logic - zod schemas, the parse ladder, totals, storage, theme
+scripts/
+  fetch-model.mjs   Downloads the Gemma 3 270M GGUF into public/models/
+test/
+  transcripts.md    20 test job descriptions used for the accuracy sweep in docs/RISKS.md
+docs/           Build log, architecture, design contract, risk register - see docs/README.md
+```
+
 ## Development
 
 ```bash
 npm install
-npm run dev
+npm run dev     # start the dev server (fetches the model first if missing)
+npm run build   # production build to dist/
+npm run lint    # oxlint - should report zero warnings
+npm run preview # serve the production build locally
 ```
 
 First run downloads the local model (Gemma 3 270M, ~278MB) into
