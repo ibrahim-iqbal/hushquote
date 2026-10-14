@@ -8,6 +8,7 @@ never leave the device they were typed on.
 
 **Live:** https://hushquote.onrender.com
 **Built for:** [DEV Hacktoberfest Open-Source AI Challenge, Week 2](https://dev.to/events/challenges/hacktoberfest-week2-2026-10-12) ("Side Hustle"), targeting Best Use of Gemma and Best Use of Render.
+**Submission post:** https://dev.to/ibrahimiqbal/hushquote-quotes-that-stay-yours-3ldl
 
 ![Real job typed in, the model extracts it, one line confirmed, client named - all on the live deploy](docs/design/post-screenshots/hushquote-demo.gif)
 

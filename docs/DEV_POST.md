@@ -1,9 +1,10 @@
 <!--
-D5 DRAFT. Images and the demo GIF are uploaded and hosted on DEV's own
-CDN now. Decide whether to publish the DevRelay agent session (optional
-per the challenge rules) and link it where marked. Read it out loud once
-per docs/UI.md's D4 polish gate copy rule before publishing. Publish only
-when the user says so - this is explicitly a draft until then.
+D5. PUBLISHED at https://dev.to/ibrahimiqbal/hushquote-quotes-that-stay-yours-3ldl
+(article id 4848352). Images are hosted on GitHub raw (not DEV's own
+upload bucket - that one silently dropped a file mid-session, GitHub
+raw is the durable source of truth; DEV rehosts its own CDN copy on
+ingest regardless). Optional: publish the DevRelay agent session and
+link it below if desired. Keep this file in sync with the live post.
 -->
 
 # HushQuote: quotes that stay yours
@@ -12,7 +13,7 @@ when the user says so - this is explicitly a draft until then.
 
 **What I Built:** HushQuote. Speak a job description, get an itemized, editable quote - then a PDF. A small open-weight model (Gemma 3 270M) runs entirely inside the browser tab, on WebGPU when it's there and WASM when it isn't. No account, no server, no install. The client's name and the day rate never leave the device they were typed on.
 
-![Real job typed in, the model extracts it, one line confirmed, client named - all on the live deploy](https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/zoq3y6taowq16u19g3d0.gif)
+![Real job typed in, the model extracts it, one line confirmed, client named - all on the live deploy](https://raw.githubusercontent.com/ibrahim-iqbal/hushquote/main/docs/design/post-screenshots/hushquote-demo.gif)
 
 ## The problem
 
@@ -20,7 +21,7 @@ Every tradesperson I know who works for themselves does the same thing after a j
 
 The invoicing SaaS market solved this with a $15/month subscription and an account you have to make, for software that's worse at the one job that actually matters: turning what you just said out loud into a document. That's the gap HushQuote is built for - it's cheap enough to be a real side-hustle tool, not a line item.
 
-![Cover page - model downloading, then the lock-open reveal](https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/x2pwvah6nic9nxmsrcyr.jpg)
+![Cover page - model downloading, then the lock-open reveal](https://raw.githubusercontent.com/ibrahim-iqbal/hushquote/main/docs/design/post-screenshots/01-cover.jpg)
 
 ## What I built
 
@@ -32,7 +33,7 @@ The whole app is one living document, not a wizard:
 
 Say or type the job. The model reads it into structured line items - description, quantity, unit, rate - and they land on the sheet looking exactly like what you'd hand a client, except every model-sourced line is visually provisional: a dashed border and an "Estimated. Yours to set." label, until you tap to confirm it. Math is never done by the model; totals are always computed in plain JavaScript from whatever's actually on the sheet.
 
-![The Sheet mid-extraction - confirmed and still-estimated lines side by side](https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/vvqmomoens3v92l8lxpv.jpg)
+![The Sheet mid-extraction - confirmed and still-estimated lines side by side](https://raw.githubusercontent.com/ibrahim-iqbal/hushquote/main/docs/design/post-screenshots/02-sheet-extraction.jpg)
 
 ## How I built it
 
@@ -40,7 +41,7 @@ Say or type the job. The model reads it into structured line items - description
 
 That's the one sentence that governs every design choice here. A 270-million-parameter model is small enough to ship as a file instead of a service, but it is also small enough to be wrong in specific, repeatable ways - so nothing it says is trusted until code checks it.
 
-![Flow: mic or text input through Gemma 3 270M, JSON-schema validation, one repair retry, and either a confirmed sheet line or a fallback to manual mode](https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/8dzj4ghzeq12cmftyxd5.png)
+![Flow: mic or text input through Gemma 3 270M, JSON-schema validation, one repair retry, and either a confirmed sheet line or a fallback to manual mode](https://raw.githubusercontent.com/ibrahim-iqbal/hushquote/main/docs/design/post-screenshots/extraction-flow.png)
 
 Concretely:
 
