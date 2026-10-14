@@ -32,7 +32,7 @@ The whole app is one living document, not a wizard:
 
 Say or type the job. The model reads it into structured line items - description, quantity, unit, rate - and they land on the sheet looking exactly like what you'd hand a client, except every model-sourced line is visually provisional: a dashed border and an "Estimated. Yours to set." label, until you tap to confirm it. Math is never done by the model; totals are always computed in plain JavaScript from whatever's actually on the sheet.
 
-![The Sheet mid-extraction - confirmed and still-estimated lines side by side](https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/8qfbp8gaqyigad788jcj.jpg)
+![The Sheet mid-extraction - confirmed and still-estimated lines side by side](https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/vvqmomoens3v92l8lxpv.jpg)
 
 ## How I built it
 
