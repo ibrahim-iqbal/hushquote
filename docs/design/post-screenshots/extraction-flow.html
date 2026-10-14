@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>HushQuote extraction flow</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F4F5F7;
+    --ink: #15171C;
+    --muted: #5C6470;
+    --soft: #7A8390;
+    --rule: rgba(21,23,28,0.12);
+    --accent: #2B4BD7;
+    --accent-tint: rgba(43,75,215,0.08);
+    --danger: #C0392B;
+    --danger-tint: rgba(192,57,43,0.06);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    font-family: 'Geist', sans-serif;
+    padding: 32px 16px;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  .eyebrow {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 8px;
+  }
+  h1 {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: 28px;
+    color: var(--ink);
+    margin: 0 0 24px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">How it works</p>
+  <h1>The model only extracts. The app decides what's true.</h1>
+  <svg viewBox="0 0 820 792" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="extraction-flow-title extraction-flow-desc">
+    <title id="extraction-flow-title">HushQuote extraction and validation flow</title>
+    <desc id="extraction-flow-desc">A job description goes through Gemma 3 270M, gets validated against a JSON schema, retries once on failure, and either reaches the sheet as a user-confirmed line or falls back to manual entry - the model never touches the totals.</desc>
+    <defs>
+      <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#5C6470"/>
+      </marker>
+      <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#2B4BD7"/>
+      </marker>
+      <marker id="arrow-danger" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#C0392B"/>
+      </marker>
+    </defs>
+    <rect width="820" height="792" fill="var(--paper)"/>
+
+    <!-- ===== ARROWS (drawn before boxes) ===== -->
+    <!-- N1 -> N2 -->
+    <path d="M 380 104 V 144" fill="none" stroke="#5C6470" stroke-width="1" marker-end="url(#arrow)"/>
+    <!-- N2 -> N3 diamond top -->
+    <path d="M 380 216 V 252" fill="none" stroke="#5C6470" stroke-width="1" marker-end="url(#arrow)"/>
+    <!-- N3 right (valid) -> elbow right -> down -> into N6 left edge (upper attach) -->
+    <path d="M 460 312 H 560 V 392" fill="none" stroke="#2B4BD7" stroke-width="1" marker-end="url(#arrow-accent)"/>
+    <rect x="466" y="300" width="42" height="14" rx="2" fill="var(--paper)"/>
+    <text x="487" y="310" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="8" letter-spacing="0.06em" fill="#2B4BD7">VALID</text>
+    <!-- N3 bottom (invalid) -> N4 -->
+    <path d="M 380 372 V 408" fill="none" stroke="#5C6470" stroke-width="1" marker-end="url(#arrow)"/>
+    <rect x="344" y="378" width="52" height="14" rx="2" fill="var(--paper)"/>
+    <text x="370" y="388" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="8" letter-spacing="0.06em" fill="#5C6470">INVALID</text>
+    <!-- N4 -> N5 diamond top -->
+    <path d="M 380 464 V 480" fill="none" stroke="#5C6470" stroke-width="1" marker-end="url(#arrow)"/>
+    <!-- N5 right (valid) -> elbow right -> up -> into N6 left edge (lower attach) -->
+    <path d="M 460 540 H 560 V 420" fill="none" stroke="#2B4BD7" stroke-width="1" marker-end="url(#arrow-accent)"/>
+    <rect x="466" y="528" width="42" height="14" rx="2" fill="var(--paper)"/>
+    <text x="487" y="538" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="8" letter-spacing="0.06em" fill="#2B4BD7">VALID</text>
+    <!-- N5 bottom (still invalid) -> N7 -->
+    <path d="M 380 600 V 656" fill="none" stroke="#C0392B" stroke-width="1" marker-end="url(#arrow-danger)"/>
+    <rect x="336" y="616" width="88" height="14" rx="2" fill="var(--paper)"/>
+    <text x="380" y="626" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="8" letter-spacing="0.06em" fill="#C0392B">STILL INVALID</text>
+    <!-- N6 -> N8 -->
+    <path d="M 660 448 V 480" fill="none" stroke="#5C6470" stroke-width="1" marker-end="url(#arrow)"/>
+    <!-- N8 -> N9 -->
+    <path d="M 660 544 V 592" fill="none" stroke="#2B4BD7" stroke-width="1" marker-end="url(#arrow-accent)"/>
+    <rect x="620" y="552" width="80" height="14" rx="2" fill="var(--paper)"/>
+    <text x="660" y="562" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="8" letter-spacing="0.06em" fill="#2B4BD7">USER CONFIRMS</text>
+
+    <!-- ===== NODES ===== -->
+    <!-- N1: start oval -->
+    <rect x="280" y="40" width="200" height="64" rx="32" fill="rgba(92,100,112,0.10)" stroke="#7A8390" stroke-width="1"/>
+    <text x="380" y="67" text-anchor="middle" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#15171C">Mic / text input</text>
+    <text x="380" y="83" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" fill="#5C6470">the job description</text>
+
+    <!-- N2: backend rect -->
+    <rect x="260" y="144" width="240" height="72" rx="6" fill="#ffffff" stroke="#15171C" stroke-width="1"/>
+    <text x="380" y="176" text-anchor="middle" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#15171C">wllama + Gemma 3 270M</text>
+    <text x="380" y="192" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" fill="#5C6470">WebGPU or WASM - json_schema decoding</text>
+    <text x="380" y="206" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" fill="#5C6470">few-shot prompt</text>
+
+    <!-- N3: diamond -->
+    <polygon points="380,252 460,312 380,372 300,312" fill="#ffffff" stroke="#15171C" stroke-width="1"/>
+    <text x="380" y="308" text-anchor="middle" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#15171C">zod validate</text>
+    <text x="380" y="322" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" fill="#5C6470">valid JSON?</text>
+
+    <!-- N4: optional dashed rect -->
+    <rect x="280" y="408" width="200" height="56" rx="6" fill="rgba(21,23,28,0.02)" stroke="rgba(21,23,28,0.35)" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="380" y="432" text-anchor="middle" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#15171C">One repair generation</text>
+    <text x="380" y="448" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" fill="#5C6470">model sees its own error</text>
+
+    <!-- N5: diamond 2 -->
+    <polygon points="380,480 460,540 380,600 300,540" fill="#ffffff" stroke="#15171C" stroke-width="1"/>
+    <text x="380" y="536" text-anchor="middle" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#15171C">zod validate</text>
+    <text x="380" y="550" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" fill="#5C6470">valid now?</text>
+
+    <!-- N7: surrender, end oval, danger focal -->
+    <rect x="270" y="656" width="220" height="64" rx="32" fill="rgba(192,57,43,0.06)" stroke="#C0392B" stroke-width="1.2"/>
+    <text x="380" y="683" text-anchor="middle" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#C0392B">Surrender</text>
+    <text x="380" y="699" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" fill="#C0392B">drops to manual mode</text>
+
+    <!-- N6: store rect -->
+    <rect x="560" y="392" width="200" height="56" rx="6" fill="rgba(21,23,28,0.05)" stroke="#5C6470" stroke-width="1"/>
+    <text x="660" y="416" text-anchor="middle" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#15171C">Map to line item</text>
+    <text x="660" y="432" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" fill="#5C6470">source: model</text>
+
+    <!-- N8: optional dashed rect -->
+    <rect x="540" y="480" width="240" height="64" rx="6" fill="rgba(21,23,28,0.02)" stroke="rgba(21,23,28,0.35)" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="660" y="505" text-anchor="middle" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#15171C">Sheet: dashed</text>
+    <text x="660" y="521" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" fill="#5C6470">"Estimated. Yours to set."</text>
+    <text x="660" y="535" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" fill="#5C6470">or user edits / removes</text>
+
+    <!-- N9: focal accent rect -->
+    <rect x="540" y="592" width="240" height="64" rx="6" fill="rgba(43,75,215,0.08)" stroke="#2B4BD7" stroke-width="1.2"/>
+    <text x="660" y="617" text-anchor="middle" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#15171C">Sheet: solid</text>
+    <text x="660" y="633" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" fill="#2B4BD7">source: user</text>
+    <text x="660" y="647" text-anchor="middle" font-family="'Geist Mono', monospace" font-size="9" fill="#5C6470">now counted toward the total</text>
+
+    <!-- ===== LEGEND ===== -->
+    <line x1="30" y1="724" x2="790" y2="724" stroke="rgba(21,23,28,0.10)" stroke-width="0.8"/>
+    <text x="30" y="744" font-family="'Geist Mono', monospace" font-size="8" letter-spacing="0.14em" fill="#5C6470">LEGEND</text>
+
+    <rect x="30" y="758" width="14" height="14" rx="6" fill="#ffffff" stroke="#15171C" stroke-width="1"/>
+    <text x="50" y="769" font-family="'Geist Mono', monospace" font-size="9" fill="#5C6470">model / process step</text>
+
+    <rect x="210" y="758" width="14" height="14" rx="6" fill="rgba(21,23,28,0.02)" stroke="rgba(21,23,28,0.35)" stroke-width="1" stroke-dasharray="3,2"/>
+    <text x="230" y="769" font-family="'Geist Mono', monospace" font-size="9" fill="#5C6470">provisional / unconfirmed</text>
+
+    <rect x="430" y="758" width="14" height="14" rx="6" fill="rgba(43,75,215,0.08)" stroke="#2B4BD7" stroke-width="1.2"/>
+    <text x="450" y="769" font-family="'Geist Mono', monospace" font-size="9" fill="#5C6470">confirmed, on the sheet</text>
+
+    <rect x="630" y="758" width="14" height="14" rx="6" fill="rgba(192,57,43,0.06)" stroke="#C0392B" stroke-width="1.2"/>
+    <text x="650" y="769" font-family="'Geist Mono', monospace" font-size="9" fill="#5C6470">falls back to manual</text>
+  </svg>
+</div>
+</body>
+</html>
