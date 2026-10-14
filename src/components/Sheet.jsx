@@ -110,10 +110,19 @@ export default function Sheet({ onExampleChip }) {
               <input
                 type="number"
                 inputMode="decimal"
+                min={0}
+                max={100}
                 value={Math.round(quote.taxRate * 100)}
                 onChange={(e) => {
                   const pct = parseFloat(e.target.value)
-                  dispatch({ type: 'TAX_SET', taxRate: Number.isFinite(pct) ? pct / 100 : 0 })
+                  // Clamped to [0,100]: Quote.taxRate is zod-bound to [0,1]
+                  // (src/lib/schema.js), and zod rejects the WHOLE saved
+                  // quote object if this one field is out of range - an
+                  // unclamped value here would silently wipe every line
+                  // item on the next reload (loadJSON falls back to
+                  // emptyQuote()), not just reset the tax field.
+                  const clamped = Number.isFinite(pct) ? Math.min(100, Math.max(0, pct)) : 0
+                  dispatch({ type: 'TAX_SET', taxRate: clamped / 100 })
                 }}
                 className="w-10 rounded border bg-transparent px-1 text-right font-mono text-[12.5px] outline-none"
                 style={{ borderColor: 'var(--line)' }}

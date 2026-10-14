@@ -24,7 +24,22 @@ export function RatesProvider({ children }) {
   }
 
   function updateRate(index, patch) {
-    setRates((prev) => prev.map((r, i) => (i === index ? { ...r, ...patch } : r)))
+    // Clamp rate >= 0 here, the single choke point every edit goes
+    // through: RateItem.rate is zod-bound to nonnegative() (schema.js),
+    // and zod rejects the WHOLE saved array if any one entry is invalid -
+    // a single negative rate would silently wipe every saved rate on the
+    // next reload (loadJSON falls back to []), not just that one row.
+    setRates((prev) =>
+      prev.map((r, i) => {
+        if (i !== index) return r
+        const merged = { ...r, ...patch }
+        if ('rate' in patch) {
+          const num = Number(merged.rate)
+          merged.rate = Number.isFinite(num) && num >= 0 ? num : 0
+        }
+        return merged
+      })
+    )
   }
 
   function removeRate(index) {

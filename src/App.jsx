@@ -11,6 +11,21 @@ import Sheet from './components/Sheet'
 import CommandBar from './components/CommandBar'
 import ProfileDrawer from './components/ProfileDrawer'
 
+// Each chip's full, correct answer, seeded directly rather than run through
+// the live model. See docs/RISKS.md R3: every one of these transcripts,
+// even the ones the model gets the FIRST line right on, also produces 2-4
+// extra fabricated lines (a duplicated/garbled fragment, or the few-shot
+// example's "Materials/Labor/Callout" leaking in) - a baseline behavior on
+// this model, not something fixable by rewording the sample text. An
+// onboarding chip's job is to teach the UI by showing one correct, clean
+// result (docs/UI.md rule 6's "sample data"), not to demo the model's real
+// failure modes on the very first thing a new user sees.
+const EXAMPLE_ITEMS = {
+  'bathroom tiling': { description: 'Wall and floor tiling', qty: 40, unit: 'm2', rate: null },
+  'fence staining': { description: 'Fence staining', qty: 40, unit: 'm', rate: 10 },
+  'garden cleanup': { description: 'Garden cleanup', qty: 3, unit: 'hour', rate: null },
+}
+
 function Workspace() {
   const [transcript, setTranscript] = useState('')
   const [hint, setHint] = useState('')
@@ -48,17 +63,16 @@ function Workspace() {
   }
 
   function handleExampleChip(label) {
-    const text = `${label} job`
-    if (model.status === 'ready') {
-      handleSubmit(text)
-      return
-    }
-    // Model not ready yet (likely, since loading takes a few seconds) -
-    // the chip must still teach by doing something, per docs/UI.md rule 6,
-    // so seed one clean sample line directly instead of leaving it inert.
-    setTranscript(text)
+    // Always seeds directly - never calls the live model. See the
+    // EXAMPLE_ITEMS comment above for why: this used to call handleSubmit
+    // when the model was ready, which reliably produced 2-4 fabricated
+    // extra lines on every sample transcript tried. source: 'user' (not
+    // 'model') because this is a known-correct seed, not something that
+    // needs the pending/estimate confirmation step.
+    const item = EXAMPLE_ITEMS[label] ?? { description: label, qty: 1, unit: 'job', rate: null }
+    setTranscript(`${label} job`)
     setHint('')
-    dispatch({ type: 'ITEM_ADDED', description: label, qty: 1, unit: 'job', rate: null, source: 'user' })
+    dispatch({ type: 'ITEM_ADDED', ...item, source: 'user' })
   }
 
   function handleDownloadPdf() {

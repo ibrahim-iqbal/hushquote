@@ -2,7 +2,7 @@
 // and docs/HANDOFF.md for the exact SVG. Shown only when the Sheet has zero
 // line items and nothing has been typed yet.
 
-const CHIPS = ['bathroom tiling', 'logo package', 'garden cleanup']
+const CHIPS = ['bathroom tiling', 'fence staining', 'garden cleanup']
 
 export default function BlueprintEmpty({ onChipClick }) {
   return (

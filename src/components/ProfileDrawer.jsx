@@ -94,10 +94,16 @@ export default function ProfileDrawer({ open, onClose }) {
                 <input
                   type="number"
                   inputMode="decimal"
+                  min={0}
+                  max={100}
                   value={Math.round((profile.taxRate ?? 0) * 100)}
                   onChange={(e) => {
                     const pct = parseFloat(e.target.value)
-                    setProfile({ ...profile, taxRate: Number.isFinite(pct) ? pct / 100 : 0 })
+                    // Same reasoning as Sheet.jsx's tax input: BusinessProfile.taxRate
+                    // is zod-bound to [0,1], and an out-of-range value here would
+                    // silently wipe the whole saved profile on the next reload.
+                    const clamped = Number.isFinite(pct) ? Math.min(100, Math.max(0, pct)) : 0
+                    setProfile({ ...profile, taxRate: clamped / 100 })
                   }}
                   className="min-h-11 w-full rounded-[10px] border-[1.5px] px-3 text-[15px] outline-none"
                   style={inputStyle}
@@ -147,6 +153,7 @@ export default function ProfileDrawer({ open, onClose }) {
                 <input
                   type="number"
                   inputMode="decimal"
+                  min={0}
                   value={r.rate}
                   onChange={(e) => {
                     const num = parseFloat(e.target.value)
