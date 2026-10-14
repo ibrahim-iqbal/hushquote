@@ -3,15 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Speak a job, get a professional quote. A local open-weight model runs entirely in your browser, no account, no server." />
+    <meta name="keywords" content="quote generator, invoice generator, freelancer tools, local AI, offline AI, Gemma, open-weight model, tradesperson app, PWA" />
+    <meta name="author" content="Ibrahim Iqbal" />
+    <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#2B4BD7" />
     <meta name="color-scheme" content="light dark" />
     <title>HushQuote: quotes that stay yours</title>
+    <!-- TODO once Render deploy is live: set this to the real URL, also update og:url and twitter equivalents below -->
+    <link rel="canonical" href="https://github.com/ibrahim-iqbal/hushquote" />
 
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://github.com/ibrahim-iqbal/hushquote" />
     <meta property="og:title" content="HushQuote: quotes that stay yours" />
     <meta property="og:description" content="Speak a job, get a professional quote. A local open-weight model runs entirely in your browser, no account, no server." />
     <meta property="og:image" content="/cover-cobalt-pearl.png" />
@@ -19,6 +26,19 @@
     <meta name="twitter:title" content="HushQuote: quotes that stay yours" />
     <meta name="twitter:description" content="Speak a job, get a professional quote. Runs entirely on your device." />
     <meta name="twitter:image" content="/cover-cobalt-pearl.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "HushQuote",
+        "description": "Speak a job, get a professional quote. A local open-weight model runs entirely in your browser, no account, no server.",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Any (runs in-browser)",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "author": { "@type": "Person", "name": "Ibrahim Iqbal", "url": "https://github.com/ibrahim-iqbal" }
+      }
+    </script>
   </head>
   <body>
     <script>

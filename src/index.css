@@ -36,6 +36,7 @@
   --mono: "Geist Mono Variable", monospace;
   --grad-btn: linear-gradient(180deg,#3558E8,#2B4BD7 55%,#2440BE);
   --grad-edge: linear-gradient(90deg,#1E37A8,#2B4BD7 35%,#6B85F2 75%,#2B4BD7);
+  --rail-wash: rgba(244,245,247,.92);
 }
 
 /* Dark tokens apply automatically from system preference by default, and
@@ -55,6 +56,7 @@
     --accent: #6B85F2;
     --accent-soft: #1D2440;
     --pending: #1E222A;
+    --rail-wash: rgba(16,18,22,.92);
   }
 }
 
@@ -67,6 +69,7 @@
   --accent: #6B85F2;
   --accent-soft: #1D2440;
   --pending: #1E222A;
+  --rail-wash: rgba(16,18,22,.92);
 }
 
 * { box-sizing: border-box; }

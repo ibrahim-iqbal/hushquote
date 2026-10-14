@@ -15,7 +15,7 @@ export default function MarginRail({ transcript, hint }) {
       style={{
         borderColor: 'var(--line)',
         background:
-          'linear-gradient(rgba(244,245,247,.92),rgba(244,245,247,.92)), repeating-linear-gradient(0deg, transparent 0 11px, rgba(43,75,215,.07) 11px 12px), repeating-linear-gradient(90deg, transparent 0 11px, rgba(43,75,215,.07) 11px 12px)',
+          'linear-gradient(var(--rail-wash),var(--rail-wash)), repeating-linear-gradient(0deg, transparent 0 11px, rgba(43,75,215,.07) 11px 12px), repeating-linear-gradient(90deg, transparent 0 11px, rgba(43,75,215,.07) 11px 12px)',
       }}
     >
       <div
@@ -43,6 +43,15 @@ export default function MarginRail({ transcript, hint }) {
         <LockKey size={14} className="mt-0.5 shrink-0" style={{ color: 'var(--accent)' }} />
         Processed on this device. Nothing was uploaded.
       </div>
+      <a
+        href="https://github.com/ibrahim-iqbal/hushquote"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="hidden text-[11px] motion-safe:transition-opacity hover:opacity-70 md:block"
+        style={{ color: 'var(--muted)' }}
+      >
+        Built by Ibrahim Iqbal
+      </a>
     </div>
   )
 }
