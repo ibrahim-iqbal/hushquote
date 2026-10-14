@@ -1,10 +1,14 @@
 <!--
-D5 DRAFT. This is a markdown draft, not the final dev.to post.
+D5 DRAFT. Already created on DEV as an unpublished draft (not published -
+the user asked to set it up, not ship it). This file is kept in sync as
+the source of truth; re-push to the draft by re-running create_article
+style edits through DevRelay, or just edit directly in the DEV editor.
 Before publishing:
-1. Record the demo video/GIF (marked [DEMO VIDEO HERE]) and upload it to dev.to directly - dev.to embeds video by drag-drop, this file can't do that.
-2. Upload docs/design/post-screenshots/*.jpg into the dev.to editor at the marked spots (drag-drop into the post body - dev.to rehosts images, local paths don't work once published).
-4. Decide whether to publish the DevRelay agent session (optional per the challenge rules) and link it where marked.
-5. Read it out loud once per docs/UI.md's D4 polish gate copy rule before publishing.
+1. docs/design/post-screenshots/hushquote-demo.gif is recorded (real job -> extraction -> confirm -> client name, on the live deploy). Drag it into the DEV editor at the marked spot - local paths don't survive publish, dev.to needs it uploaded through the editor or API.
+2. Same for docs/design/post-screenshots/01-cover.jpg and 02-sheet-extraction.jpg - drag-drop into the post body at the marked spots.
+3. Decide whether to publish the DevRelay agent session (optional per the challenge rules) and link it where marked.
+4. Read it out loud once per docs/UI.md's D4 polish gate copy rule before publishing.
+5. Publish only when the user says so - this is explicitly a draft until then.
 -->
 
 # HushQuote: quotes that stay yours
@@ -13,7 +17,7 @@ Before publishing:
 
 **What I Built:** HushQuote. Speak a job description, get an itemized, editable quote - then a PDF. A small open-weight model (Gemma 3 270M) runs entirely inside the browser tab, on WebGPU when it's there and WASM when it isn't. No account, no server, no install. The client's name and the day rate never leave the device they were typed on.
 
-[DEMO VIDEO HERE - 30-45s, silent is fine, screen record: open app, say/type a job, watch it typeset onto the sheet, edit a line, download PDF]
+[DEMO GIF HERE - docs/design/post-screenshots/hushquote-demo.gif, drag into the DEV editor: a real job typed in, the model extracts it, one line confirmed, client named, all on the live deploy]
 
 ## The problem
 
@@ -97,7 +101,6 @@ HushQuote has no backend at all, not even a local one. It's a static site. The m
 
 ## What's next
 
-- Deploying to Render (static site, `render.yaml` already in the repo) - this is also the "Best Use of Render" category, separate from "Best Use of Gemma," so it's worth finishing even though the app already works without it.
 - The deterministic regex co-extraction pass flagged in `docs/RISKS.md` as the next real lever on accuracy, if there's time after this post.
 - Finding an actual tradesperson to hand this to and reporting back what they asked for next - the challenge's bonus round, not done yet at time of writing.
 
