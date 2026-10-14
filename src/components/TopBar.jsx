@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LockKey, DownloadSimple, PencilSimple, SunDim, MoonStars, Plus, SquaresFour } from '@phosphor-icons/react'
-import { useQuote, useQuoteList, useQuoteDispatch, emptyQuote, nextQNumber } from '../context/QuoteContext'
+import { useQuote, useQuoteList, emptyQuote, nextQNumber } from '../context/QuoteContext'
 import { getEffectiveTheme, setTheme } from '../lib/theme'
 
 export default function TopBar({ onDownloadPdf, onEditProfile }) {
   const quote = useQuote()
   const quotes = useQuoteList()
-  const dispatch = useQuoteDispatch()
   const navigate = useNavigate()
   const hasClient = Boolean(quote.client?.name)
   const hasItems = quote.items.length > 0
@@ -16,10 +15,11 @@ export default function TopBar({ onDownloadPdf, onEditProfile }) {
   function handleNewQuote() {
     // Each "+" press always starts a genuinely new saved quote now (the
     // dashboard lists every quote - see docs/UI.md's Dashboard section),
-    // so there's nothing destructive here to confirm.
+    // so there's nothing destructive here to confirm. The actual
+    // QUOTE_CREATED dispatch happens in Workspace's own effect once it
+    // re-mounts at the new :id - see App.jsx's comment on why.
     const next = emptyQuote(nextQNumber(quotes))
-    dispatch({ type: 'QUOTE_CREATED', quote: next })
-    navigate(`/quote/${next.id}`)
+    navigate(`/quote/${next.id}`, { state: { newQuote: next } })
   }
 
   useEffect(() => {

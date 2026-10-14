@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { HashRouter, Routes, Route, useParams, useNavigate } from 'react-router-dom'
+import { HashRouter, Routes, Route, useParams, useNavigate, useLocation } from 'react-router-dom'
 import { ModelProvider, useModel } from './context/ModelContext'
 import { QuoteProvider, useQuoteList, useQuoteDispatch } from './context/QuoteContext'
 import { ProfileProvider } from './context/ProfileContext'
@@ -31,6 +31,7 @@ const EXAMPLE_ITEMS = {
 function Workspace() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const quotes = useQuoteList()
   const [transcript, setTranscript] = useState('')
   const [hint, setHint] = useState('')
@@ -42,7 +43,17 @@ function Workspace() {
     // Deep link / back-button support: make the route's :id the active
     // quote. A stale or unknown id (deleted quote, hand-typed URL) sends
     // the user back to the dashboard instead of rendering an empty shell.
-    if (quotes.some((q) => q.id === id)) {
+    //
+    // A brand-new quote is created here too, not by the Dashboard/TopBar
+    // button that navigated here - dispatching QUOTE_CREATED and calling
+    // navigate() in the same click handler fired a real React warning
+    // ("Cannot update a component while rendering a different component"),
+    // because the dispatch landed on the Dashboard still mid-unmount.
+    // Deferring the dispatch into this effect means it only ever runs
+    // after Workspace itself has rendered - see docs/PLAN.md.
+    if (location.state?.newQuote?.id === id) {
+      dispatch({ type: 'QUOTE_CREATED', quote: location.state.newQuote })
+    } else if (quotes.some((q) => q.id === id)) {
       dispatch({ type: 'QUOTE_SELECTED', id })
     } else {
       navigate('/', { replace: true })

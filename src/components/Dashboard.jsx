@@ -5,9 +5,10 @@
 // quotes list - it never edits a quote's contents directly.
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus, FileText, CurrencyDollar, PencilSimple, TrashSimple, Check } from '@phosphor-icons/react'
+import { Plus, FileText, CurrencyDollar, PencilSimple, TrashSimple, Check, ArrowRight } from '@phosphor-icons/react'
 import { useQuoteList, useQuoteDispatch, emptyQuote, nextQNumber } from '../context/QuoteContext'
 import { computeTotals, formatMoney } from '../lib/totals'
+import BlueprintIllustration from './BlueprintIllustration'
 
 function StatCard({ icon, label, value, sub }) {
   return (
@@ -55,9 +56,11 @@ export default function Dashboard() {
   )
 
   function handleNewQuote() {
+    // The actual QUOTE_CREATED dispatch happens in Workspace's own effect
+    // once it mounts at the new route, not here - see App.jsx's comment
+    // on why dispatching here raced this component's unmount.
     const quote = emptyQuote(nextQNumber(quotes))
-    dispatch({ type: 'QUOTE_CREATED', quote })
-    navigate(`/quote/${quote.id}`)
+    navigate(`/quote/${quote.id}`, { state: { newQuote: quote } })
   }
 
   function handleDelete(e, id) {
@@ -124,20 +127,34 @@ export default function Dashboard() {
 
         {sorted.length === 0 ? (
           <div
-            className="flex flex-col items-center gap-3 rounded-[10px] border border-dashed px-6 py-14 text-center"
-            style={{ borderColor: 'var(--line)', color: 'var(--muted)' }}
+            className="flex flex-col items-center gap-6 overflow-hidden rounded-[10px] px-6 py-10 sm:flex-row sm:items-center sm:gap-8 sm:px-10"
+            style={{ background: 'linear-gradient(180deg,#20368F 0%,#1D3180 100%)' }}
           >
-            <p className="text-[14px]">No quotes yet. Say or type a job to start your first one.</p>
-            <button
-              type="button"
-              onClick={handleNewQuote}
-              className="rounded-lg px-4 py-2 text-[13.5px] font-semibold text-white motion-safe:transition-[filter] hover:brightness-110"
-              style={{ background: 'var(--grad-btn)' }}
-            >
-              New quote
-            </button>
+            <div className="flex-1 text-center sm:text-left">
+              <p className="text-[11.5px] font-semibold uppercase tracking-wide text-white/70">
+                A head start, not a shortcut
+              </p>
+              <h2 className="mt-1.5 text-[22px] font-semibold leading-tight text-white md:text-[25px]">
+                That messy job?<br />There&apos;s a good quote in there.
+              </h2>
+              <p className="mt-2 text-[13.5px] text-white/75">
+                Say it like you&apos;d tell a mate. The model finds the lines, you set the rates.
+              </p>
+              <button
+                type="button"
+                onClick={handleNewQuote}
+                className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-white px-4 py-2 text-[13.5px] font-semibold motion-safe:transition-transform motion-safe:duration-150 motion-safe:active:scale-95"
+                style={{ color: '#1D3180' }}
+              >
+                Let&apos;s give it some shape
+                <ArrowRight size={15} weight="bold" />
+              </button>
+            </div>
+            <BlueprintIllustration className="h-[150px] w-[220px] shrink-0 sm:h-[168px] sm:w-[240px]" />
           </div>
-        ) : (
+        ) : null}
+
+        {sorted.length !== 0 && (
           <div className="overflow-hidden rounded-[10px] border" style={{ borderColor: 'var(--line)' }}>
             <table className="w-full border-collapse text-left text-[13.5px]">
               <thead>
