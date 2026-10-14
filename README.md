@@ -16,7 +16,9 @@ never leave the device they were typed on.
 
 ## Status
 
-Feature-complete and deployed. Say or type a job, the model extracts
+Feature-complete and deployed. A dashboard lists every quote you've saved
+(count, total quoted value, lines still estimated) - open one to get the
+original single-document editor: say or type a job, the model extracts
 itemized lines (each one visually provisional until confirmed), edit
 anything inline, set up a business profile with a logo and a rate library,
 and export a PDF via the browser's print dialog. Manual mode (no model

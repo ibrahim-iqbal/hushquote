@@ -1,27 +1,25 @@
 import { useEffect, useState } from 'react'
-import { LockKey, DownloadSimple, PencilSimple, SunDim, MoonStars, Plus } from '@phosphor-icons/react'
-import { useQuote, useQuoteDispatch } from '../context/QuoteContext'
+import { useNavigate } from 'react-router-dom'
+import { LockKey, DownloadSimple, PencilSimple, SunDim, MoonStars, Plus, SquaresFour } from '@phosphor-icons/react'
+import { useQuote, useQuoteList, useQuoteDispatch, emptyQuote, nextQNumber } from '../context/QuoteContext'
 import { getEffectiveTheme, setTheme } from '../lib/theme'
 
 export default function TopBar({ onDownloadPdf, onEditProfile }) {
   const quote = useQuote()
+  const quotes = useQuoteList()
   const dispatch = useQuoteDispatch()
+  const navigate = useNavigate()
   const hasClient = Boolean(quote.client?.name)
   const hasItems = quote.items.length > 0
   const [theme, setThemeState] = useState(getEffectiveTheme)
 
   function handleNewQuote() {
-    // Only one quote exists in storage at a time (docs/PLAN.md flags this
-    // as a known scope limit - no history, no multi-quote support), so
-    // this is destructive: confirm before wiping the current one. Skip
-    // the confirm when there's nothing to lose.
-    if (!hasItems && !hasClient) {
-      dispatch({ type: 'RESET' })
-      return
-    }
-    if (window.confirm('Start a new quote? This clears the current one.')) {
-      dispatch({ type: 'RESET' })
-    }
+    // Each "+" press always starts a genuinely new saved quote now (the
+    // dashboard lists every quote - see docs/UI.md's Dashboard section),
+    // so there's nothing destructive here to confirm.
+    const next = emptyQuote(nextQNumber(quotes))
+    dispatch({ type: 'QUOTE_CREATED', quote: next })
+    navigate(`/quote/${next.id}`)
   }
 
   useEffect(() => {
@@ -65,6 +63,15 @@ export default function TopBar({ onDownloadPdf, onEditProfile }) {
         </div>
 
         <div className="flex gap-2 pb-2">
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            aria-label="Back to all quotes"
+            className="flex min-h-9 items-center justify-center rounded-lg border px-2.5 motion-safe:transition-[background-color,transform] motion-safe:duration-150 hover:bg-[var(--accent-soft)] motion-safe:active:scale-95"
+            style={{ borderColor: 'var(--line)', color: 'var(--muted)' }}
+          >
+            <SquaresFour size={16} />
+          </button>
           <button
             type="button"
             onClick={handleNewQuote}

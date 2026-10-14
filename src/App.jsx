@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { HashRouter, Routes, Route, useParams, useNavigate } from 'react-router-dom'
 import { ModelProvider, useModel } from './context/ModelContext'
-import { QuoteProvider, useQuoteDispatch } from './context/QuoteContext'
+import { QuoteProvider, useQuoteList, useQuoteDispatch } from './context/QuoteContext'
 import { ProfileProvider } from './context/ProfileContext'
 import { RatesProvider } from './context/RatesContext'
 import { storageAvailable } from './lib/storage'
@@ -10,6 +11,7 @@ import MarginRail from './components/MarginRail'
 import Sheet from './components/Sheet'
 import CommandBar from './components/CommandBar'
 import ProfileDrawer from './components/ProfileDrawer'
+import Dashboard from './components/Dashboard'
 
 // Each chip's full, correct answer, seeded directly rather than run through
 // the live model. See docs/RISKS.md R3: every one of these transcripts,
@@ -27,11 +29,26 @@ const EXAMPLE_ITEMS = {
 }
 
 function Workspace() {
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const quotes = useQuoteList()
   const [transcript, setTranscript] = useState('')
   const [hint, setHint] = useState('')
   const [profileOpen, setProfileOpen] = useState(false)
   const dispatch = useQuoteDispatch()
   const model = useModel()
+
+  useEffect(() => {
+    // Deep link / back-button support: make the route's :id the active
+    // quote. A stale or unknown id (deleted quote, hand-typed URL) sends
+    // the user back to the dashboard instead of rendering an empty shell.
+    if (quotes.some((q) => q.id === id)) {
+      dispatch({ type: 'QUOTE_SELECTED', id })
+    } else {
+      navigate('/', { replace: true })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id])
 
   async function handleSubmit(text) {
     setTranscript(text)
@@ -115,7 +132,12 @@ export default function App() {
       <ProfileProvider>
         <RatesProvider>
           <QuoteProvider>
-            <Workspace />
+            <HashRouter>
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/quote/:id" element={<Workspace />} />
+              </Routes>
+            </HashRouter>
           </QuoteProvider>
         </RatesProvider>
       </ProfileProvider>

@@ -3,7 +3,12 @@
 // to an empty/default value silently (banner handled by the caller).
 
 const KEYS = {
+  // Legacy single-quote key (pre-dashboard). Only ever read once, to
+  // migrate a user's in-progress quote into `quotes` below - see
+  // QuoteContext.jsx's migration step.
   quote: 'hushquote.activeQuote.v1',
+  quotes: 'hushquote.quotes.v1',
+  activeQuoteId: 'hushquote.activeQuoteId.v1',
   profile: 'hushquote.businessProfile.v1',
   rates: 'hushquote.rateLibrary.v1',
 }
