@@ -10,6 +10,8 @@ never leave the device they were typed on.
 **Built for:** [DEV Hacktoberfest Open-Source AI Challenge, Week 2](https://dev.to/events/challenges/hacktoberfest-week2-2026-10-12) ("Side Hustle"), targeting Best Use of Gemma and Best Use of Render.
 **Submission post:** https://dev.to/ibrahimiqbal/hushquote-quotes-that-stay-yours-3ldl
 
+![Waveform flowing into a dimension-marked quote sheet, blueprint style](docs/design/cover-hushquote-blueprint.jpg)
+
 ![Real job typed in, the model extracts it, one line confirmed, client named - all on the live deploy](docs/design/post-screenshots/hushquote-demo.gif)
 
 ## Status
@@ -35,8 +37,12 @@ pricing under you, and because it runs on-device, a plumber's client list
 and day rates never leave their phone. Works offline on a job site with no
 signal. The closest competitors in this space (InvoicePilot AI, VaultLedger
 AI, and similar Side Hustle submissions) still require a local Ollama or
-Python backend process - HushQuote has none at all; it's a static site, and
-the model downloads straight into the browser tab.
+Python backend process. The one submission in the same product category -
+turning a brief into a priced estimate -
+is [ScopeCraft](https://dev.to/harshalranjhani/scopecraft-a-clearer-scope-a-fairer-quote-and-a-model-you-can-own-2cla),
+which still runs a local Node server for inference. HushQuote has none at
+all; it's a static site, and the model downloads straight into the browser
+tab.
 
 ## Stack
 

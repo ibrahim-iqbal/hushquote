@@ -79,6 +79,8 @@ I tried the obvious fix - dropping the few-shot example entirely and relying on 
 
 A few other Week 2 submissions land in the same space - invoice and receipt sorters for freelancers. The closest ones (InvoicePilot AI, VaultLedger AI, FreelanceAI) are all built the same way under the hood: Ollama or a Python backend the user has to install and run alongside the app. That's "local" in the sense that your data doesn't leave your machine, but it's not "no install" - you're still standing up a server process first.
 
+The one submission actually in the same product category - turning a messy brief into a priced estimate, not sorting receipts - is [ScopeCraft](https://dev.to/harshalranjhani/scopecraft-a-clearer-scope-a-fairer-quote-and-a-model-you-can-own-2cla), a genuinely good build around Qwen3-0.6B. Even it runs a small Node HTTP server locally to serve inference. HushQuote has no server step at all, local or otherwise.
+
 HushQuote has no backend at all, not even a local one. It's a static site. The model downloads into the browser tab itself and runs there via WebAssembly/WebGPU. Close the tab, and there's nothing left running on your machine to manage. That's a stronger version of the same privacy pitch, and it's the actual reason this is a PWA instead of a desktop app.
 
 ## What's next
