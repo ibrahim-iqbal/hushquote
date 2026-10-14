@@ -58,7 +58,7 @@ export default function BlueprintEmpty({ onChipClick }) {
             key={chip}
             type="button"
             onClick={() => onChipClick?.(chip)}
-            className="rounded-lg border px-3 py-2 text-[13.5px] font-medium"
+            className="rounded-lg border px-3 py-2 text-[13.5px] font-medium motion-safe:transition-[background-color,transform] motion-safe:duration-150 hover:bg-[var(--accent-soft)] motion-safe:active:scale-95"
             style={{ background: 'var(--surface)', borderColor: 'var(--line)', color: 'var(--muted)', boxShadow: 'var(--shadow)' }}
           >
             {chip}

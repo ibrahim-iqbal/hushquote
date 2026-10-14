@@ -42,11 +42,21 @@ export default function Sheet({ onExampleChip }) {
         style={{ background: 'var(--surface)', borderColor: 'var(--line)', boxShadow: 'var(--sheet-shadow)' }}
       >
         <div className="flex items-start justify-between gap-2.5 border-b-2 pb-3" style={{ borderColor: 'var(--ink)' }}>
-          <div className="min-w-0">
-            <div className="text-[15px] font-semibold">{profile.name || 'Your business'}</div>
-            <small style={{ color: 'var(--muted)' }}>
-              {[profile.contact, profile.currency].filter(Boolean).join(' · ')}
-            </small>
+          <div className="flex min-w-0 items-center gap-2.5">
+            {profile.logoDataUrl && (
+              <img
+                src={profile.logoDataUrl}
+                alt=""
+                className="h-9 w-9 shrink-0 rounded-md object-cover"
+                style={{ border: '1px solid var(--line)' }}
+              />
+            )}
+            <div className="min-w-0">
+              <div className="text-[15px] font-semibold">{profile.name || 'Your business'}</div>
+              <small style={{ color: 'var(--muted)' }}>
+                {[profile.contact, profile.currency].filter(Boolean).join(' · ')}
+              </small>
+            </div>
           </div>
           <div className="shrink-0 whitespace-nowrap text-right font-mono text-[11.5px] leading-[1.7]" style={{ color: 'var(--muted)' }}>
             QUOTE {quote.qNumber}
@@ -83,8 +93,8 @@ export default function Sheet({ onExampleChip }) {
           )}
         </div>
 
-        {quote.items.map((item) => (
-          <SheetLineItem key={item.id} item={item} />
+        {quote.items.map((item, index) => (
+          <SheetLineItem key={item.id} item={item} animationDelay={Math.min(index * 40, 160)} />
         ))}
 
         <button
@@ -92,7 +102,7 @@ export default function Sheet({ onExampleChip }) {
           onClick={() =>
             dispatch({ type: 'ITEM_ADDED', description: '', qty: 1, unit: 'item', rate: null, source: 'user' })
           }
-          className="my-2.5 flex w-full items-center justify-center gap-1.5 rounded-lg border-[1.5px] border-dashed py-2.5 text-[13.5px] font-medium"
+          className="my-2.5 flex w-full items-center justify-center gap-1.5 rounded-lg border-[1.5px] border-dashed py-2.5 text-[13.5px] font-medium motion-safe:transition-[background-color,transform] motion-safe:duration-150 hover:bg-[var(--accent-soft)] motion-safe:active:scale-[0.98]"
           style={{ borderColor: 'var(--line)', color: 'var(--muted)' }}
         >
           <Plus size={14} />

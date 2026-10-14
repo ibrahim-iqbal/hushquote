@@ -53,7 +53,7 @@ export default function CommandBar({ onSubmit, placeholder = 'Say the job, or ty
         type="button"
         onClick={busy ? model.stop : submit}
         aria-label={busy ? 'Stop' : 'Submit'}
-        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[10px] text-white"
+        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[10px] text-white motion-safe:transition-[filter,transform] motion-safe:duration-150 hover:brightness-110 motion-safe:active:scale-95"
         style={{ background: busy ? 'var(--danger)' : 'var(--grad-btn)' }}
       >
         {busy ? <Stop size={16} weight="fill" /> : <ArrowUp size={18} />}

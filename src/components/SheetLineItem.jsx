@@ -87,14 +87,14 @@ function EditableNumber({ value, onChange, placeholder, className }) {
   )
 }
 
-export default function SheetLineItem({ item }) {
+export default function SheetLineItem({ item, animationDelay = 0 }) {
   const dispatch = useQuoteDispatch()
   const pending = item.source === 'model'
 
   return (
     <div
-      className={pending ? 'rounded-lg border-t-0' : 'border-t'}
-      style={pending ? { background: 'var(--pending)' } : { borderColor: 'var(--line)' }}
+      className={`animate-item-in motion-safe:transition-colors motion-safe:duration-200 ${pending ? 'rounded-lg border-t-0' : 'border-t'}`}
+      style={{ animationDelay: `${animationDelay}ms`, ...(pending ? { background: 'var(--pending)' } : { borderColor: 'var(--line)' }) }}
     >
       <div className={pending ? 'm-2.5 rounded-lg border-[1.5px] border-dashed p-2.5' : 'flex items-baseline justify-between gap-3 py-2.5'}
            style={pending ? { borderColor: 'var(--muted)' } : undefined}>
@@ -140,7 +140,7 @@ export default function SheetLineItem({ item }) {
               <button
                 type="button"
                 onClick={() => dispatch({ type: 'ITEM_CONFIRMED', id: item.id })}
-                className="mt-1.5 text-[12.5px] font-semibold"
+                className="mt-1.5 text-[12.5px] font-semibold motion-safe:transition-opacity hover:opacity-70"
                 style={{ color: 'var(--accent)' }}
               >
                 Use this rate
@@ -153,7 +153,7 @@ export default function SheetLineItem({ item }) {
               type="button"
               onClick={() => dispatch({ type: 'ITEM_REMOVED', id: item.id })}
               aria-label="Remove line"
-              className="opacity-40 hover:opacity-100"
+              className="opacity-40 motion-safe:transition-opacity motion-safe:duration-150 hover:opacity-100"
             >
               <X size={14} />
             </button>

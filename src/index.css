@@ -38,10 +38,13 @@
   --grad-edge: linear-gradient(90deg,#1E37A8,#2B4BD7 35%,#6B85F2 75%,#2B4BD7);
 }
 
-/* Dark tokens apply automatically from system preference (no toggle built
-   yet), and are also settable by hand via data-theme for a future switch.
-   Bug fix: these were only ever reachable through the attribute selector,
-   which nothing in the app sets - dark mode was dead code until this. */
+/* Dark tokens apply automatically from system preference by default, and
+   are overridden explicitly once the user picks a theme with the TopBar
+   toggle (lib/theme.js sets data-theme, applied pre-paint by the inline
+   script in index.html to avoid a flash of the wrong theme).
+   Bug fix (D4): these were only ever reachable through the attribute
+   selector, which nothing in the app set yet - dark mode was dead code
+   until the media-query fallback below was added. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #101216;
@@ -84,5 +87,27 @@ body {
   }
   body {
     background: #fff !important;
+  }
+}
+
+/* Motion (docs/UI.md "Motion" row: 150-250ms ease-out, 40ms stagger,
+   hover/active + stream-in rows + step transitions, nothing ambient).
+   Plays once on mount, so a line item animates in when added but never
+   replays on re-render (React keeps the DOM node via item.id as key).
+   motion-safe: variants elsewhere in components handle prefers-reduced-motion
+   for the hover/press utilities; this keyframe itself is also gated by the
+   same media query below. */
+@keyframes item-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-item-in {
+  animation: item-in 220ms ease-out backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-item-in {
+    animation: none;
   }
 }
