@@ -3,7 +3,6 @@ D5 DRAFT. This is a markdown draft, not the final dev.to post.
 Before publishing:
 1. Record the demo video/GIF (marked [DEMO VIDEO HERE]) and upload it to dev.to directly - dev.to embeds video by drag-drop, this file can't do that.
 2. Upload docs/design/post-screenshots/*.jpg into the dev.to editor at the marked spots (drag-drop into the post body - dev.to rehosts images, local paths don't work once published).
-3. Fill in [LIVE URL] once Render deploy is done.
 4. Decide whether to publish the DevRelay agent session (optional per the challenge rules) and link it where marked.
 5. Read it out loud once per docs/UI.md's D4 polish gate copy rule before publishing.
 -->
@@ -104,7 +103,7 @@ HushQuote has no backend at all, not even a local one. It's a static site. The m
 
 ## Try it
 
-- **Live:** [LIVE URL]
+- **Live:** https://hushquote.onrender.com
 - **Code:** https://github.com/ibrahim-iqbal/hushquote
 - **Full build log / decisions / bugs found:** `docs/PLAN.md` and `docs/RISKS.md` in the repo - the honest version of this post, day by day.
 
