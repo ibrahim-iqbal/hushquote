@@ -10,25 +10,33 @@ never leave the device they were typed on.
 **Built for:** [DEV Hacktoberfest Open-Source AI Challenge, Week 2](https://dev.to/events/challenges/hacktoberfest-week2-2026-10-12) ("Side Hustle"), targeting Best Use of Gemma and Best Use of Render.
 **Submission post:** https://dev.to/ibrahimiqbal/hushquote-quotes-that-stay-yours-3ldl
 
-![Waveform flowing into a dimension-marked quote sheet, blueprint style](docs/design/cover-hushquote-blueprint.jpg)
-
 ![Real job typed in, the model extracts it, one line confirmed, client named - all on the live deploy](docs/design/post-screenshots/hushquote-demo.gif)
 
 ## Status
 
-Feature-complete and deployed. A dashboard lists every quote you've saved
-(count, total quoted value, lines still estimated) - open one to get the
-original single-document editor: say or type a job, the model extracts
-itemized lines (each one visually provisional until confirmed), edit
-anything inline, set up a business profile with a logo and a rate library,
-and export a PDF via the browser's print dialog. Manual mode (no model
-needed) works end to end on its own as a fallback floor.
+Feature-complete and deployed.
+
+- **Dashboard** - every quote you've saved, with stat cards (count, total
+  quoted value, lines still waiting on a rate) and a table to open, sort,
+  or delete one. First visit shows an illustrated empty state instead of a
+  blank table.
+- **The quote editor** - say or type a job, the model extracts itemized
+  lines (each one visually provisional - dashed border, "Estimated. Yours
+  to set." - until you confirm it), edit anything inline, set up a
+  business profile with a logo and a rate library, export a PDF via the
+  browser's print dialog.
+- **Manual mode** - no model needed. Works end to end on its own as a
+  fallback floor if the model fails to load.
 
 See [`docs/README.md`](docs/README.md) for the full docs index. Start with
 `docs/PLAN.md` for the day-by-day build log and decisions, `docs/RISKS.md`
 for the honest extraction-accuracy writeup (a full 20-transcript test
 sweep, not just a couple of happy-path runs), and `docs/UI.md` for the
 design contract.
+
+![Dashboard - quote count, quoted value, and lines still needing a rate, with an illustrated empty state](docs/design/post-screenshots/03-dashboard.jpg)
+
+![The Sheet mid-extraction - confirmed and still-estimated lines side by side](docs/design/post-screenshots/02-sheet-extraction.jpg)
 
 ## Why local AI
 
@@ -37,18 +45,21 @@ software that's worse at this one job. HushQuote's model is a file the app
 ships, not a service you rent: no API bill, no vendor who can change
 pricing under you, and because it runs on-device, a plumber's client list
 and day rates never leave their phone. Works offline on a job site with no
-signal. The closest competitors in this space (InvoicePilot AI, VaultLedger
-AI, and similar Side Hustle submissions) still require a local Ollama or
-Python backend process. The one submission in the same product category -
-turning a brief into a priced estimate -
-is [ScopeCraft](https://dev.to/harshalranjhani/scopecraft-a-clearer-scope-a-fairer-quote-and-a-model-you-can-own-2cla),
+signal.
+
+The closest competitors in this space (InvoicePilot AI, VaultLedger AI,
+and similar Side Hustle submissions) still require a local Ollama or
+Python backend process. The one submission actually in the same product
+category - turning a brief into a priced estimate - is
+[ScopeCraft](https://dev.to/harshalranjhani/scopecraft-a-clearer-scope-a-fairer-quote-and-a-model-you-can-own-2cla),
 which still runs a local Node server for inference. HushQuote has none at
 all; it's a static site, and the model downloads straight into the browser
 tab.
 
 ## Stack
 
-- React 19 + Vite + Tailwind v4
+- React 19 + Vite + Tailwind v4, client-side routing via `react-router-dom`
+  (`HashRouter` - no server rewrite rules needed on static hosting)
 - Zod for all data shapes (`src/lib/schema.js`)
 - Phosphor icons, self-hosted Geist / Geist Mono variable fonts
 - wllama (in-browser llama.cpp via WebAssembly/WebGPU) running Gemma 3
@@ -59,18 +70,21 @@ tab.
 
 ## Design
 
-The product is one living document, not a step wizard: a transcript rail
-("the Margin") beside an always-visible quote document ("the Sheet"), with a
-persistent command bar at the bottom. See `docs/UI.md` for the full design
-contract, including the cover page, built from a gradient generated with
+The quote editor is one living document, not a step wizard: a transcript
+rail ("the Margin") beside an always-visible quote document ("the Sheet"),
+with a persistent command bar at the bottom. The Dashboard sits in front of
+it as a single list screen, not a second information architecture - open
+any quote and you're back in the same single-document editor. One
+illustration (a waveform flowing into a dimension-marked quote sheet),
+reused in both the editor's and the Dashboard's empty states, never a
+second style. See `docs/UI.md` for the full design contract, including the
+cover page, built from a gradient generated with
 [FeralUI](https://feralui.dev/gradients). Motion (line-item stream-in, a
 shimmer on AI-estimated lines, a glow while the model's thinking) is scoped
 to real state, not decoration - see the D4 UX-pass entries in
 `docs/PLAN.md`.
 
 ![Cover page - model downloading, then the lock-open reveal](docs/design/post-screenshots/01-cover.jpg)
-
-![The Sheet mid-extraction - confirmed and still-estimated lines side by side](docs/design/post-screenshots/02-sheet-extraction.jpg)
 
 ### How extraction works
 
@@ -80,8 +94,9 @@ to real state, not decoration - see the D4 UX-pass entries in
 
 ```
 src/
-  components/   UI (Margin, Sheet, Command Bar, Cover Page, Profile Drawer, Top Bar)
-  context/      React context + reducer state (quote, profile, rates, model)
+  components/   UI - Dashboard, Margin, Sheet, Command Bar, Cover Page,
+                Profile Drawer, Top Bar, the shared Blueprint illustration
+  context/      React context + reducer state (quotes list, profile, rates, model)
   lib/          Pure logic - zod schemas, the parse ladder, totals, storage, theme
 scripts/
   fetch-model.mjs   Downloads the Gemma 3 270M GGUF into public/models/
