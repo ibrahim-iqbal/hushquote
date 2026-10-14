@@ -1,23 +1,18 @@
 <!--
-D5 DRAFT. Already created on DEV as an unpublished draft (not published -
-the user asked to set it up, not ship it). This file is kept in sync as
-the source of truth; re-push to the draft by re-running create_article
-style edits through DevRelay, or just edit directly in the DEV editor.
-Before publishing:
-1. docs/design/post-screenshots/hushquote-demo.gif is recorded (real job -> extraction -> confirm -> client name, on the live deploy). Drag it into the DEV editor at the marked spot - local paths don't survive publish, dev.to needs it uploaded through the editor or API.
-2. Same for docs/design/post-screenshots/01-cover.jpg and 02-sheet-extraction.jpg - drag-drop into the post body at the marked spots.
-3. Decide whether to publish the DevRelay agent session (optional per the challenge rules) and link it where marked.
-4. Read it out loud once per docs/UI.md's D4 polish gate copy rule before publishing.
-5. Publish only when the user says so - this is explicitly a draft until then.
+D5 DRAFT. Images and the demo GIF are uploaded and hosted on DEV's own
+CDN now. Decide whether to publish the DevRelay agent session (optional
+per the challenge rules) and link it where marked. Read it out loud once
+per docs/UI.md's D4 polish gate copy rule before publishing. Publish only
+when the user says so - this is explicitly a draft until then.
 -->
 
 # HushQuote: quotes that stay yours
 
-*This is a submission for the [Hacktoberfest Open-Source AI Challenge: Week 2 - Side Hustle](https://dev.to/devteam/join-the-hacktoberfest-open-source-ai-challenge-side-hustle-2550-in-prizes-across-18-winners-55ba)*
+*This is a submission for the [Hacktoberfest Open-Source AI Challenge: Week 2 - Side Hustle](https://dev.to/events/challenges/hacktoberfest-week2-2026-10-12)*
 
 **What I Built:** HushQuote. Speak a job description, get an itemized, editable quote - then a PDF. A small open-weight model (Gemma 3 270M) runs entirely inside the browser tab, on WebGPU when it's there and WASM when it isn't. No account, no server, no install. The client's name and the day rate never leave the device they were typed on.
 
-[DEMO GIF HERE - docs/design/post-screenshots/hushquote-demo.gif, drag into the DEV editor: a real job typed in, the model extracts it, one line confirmed, client named, all on the live deploy]
+![Real job typed in, the model extracts it, one line confirmed, client named - all on the live deploy](https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/zoq3y6taowq16u19g3d0.gif)
 
 ## The problem
 
@@ -25,7 +20,7 @@ Every tradesperson I know who works for themselves does the same thing after a j
 
 The invoicing SaaS market solved this with a $15/month subscription and an account you have to make, for software that's worse at the one job that actually matters: turning what you just said out loud into a document. That's the gap HushQuote is built for - it's cheap enough to be a real side-hustle tool, not a line item.
 
-![Cover page - model downloading, then the lock-open reveal](docs/design/post-screenshots/01-cover.jpg)
+![Cover page - model downloading, then the lock-open reveal](https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/x2pwvah6nic9nxmsrcyr.jpg)
 
 ## What I built
 
@@ -37,7 +32,7 @@ The whole app is one living document, not a wizard:
 
 Say or type the job. The model reads it into structured line items - description, quantity, unit, rate - and they land on the sheet looking exactly like what you'd hand a client, except every model-sourced line is visually provisional: a dashed border and an "Estimated. Yours to set." label, until you tap to confirm it. Math is never done by the model; totals are always computed in plain JavaScript from whatever's actually on the sheet.
 
-![The Sheet mid-extraction - two confirmed lines, two still marked estimated](docs/design/post-screenshots/02-sheet-extraction.jpg)
+![The Sheet mid-extraction - confirmed and still-estimated lines side by side](https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/8qfbp8gaqyigad788jcj.jpg)
 
 ## How I built it
 
@@ -45,21 +40,7 @@ Say or type the job. The model reads it into structured line items - description
 
 That's the one sentence that governs every design choice here. A 270-million-parameter model is small enough to ship as a file instead of a service, but it is also small enough to be wrong in specific, repeatable ways - so nothing it says is trusted until code checks it.
 
-```mermaid
-flowchart LR
-    A[Mic / text input] --> B[wllama + Gemma 3 270M<br/>WebGPU or WASM]
-    B -->|JSON schema<br/>constrained decoding| C{zod validate}
-    C -->|valid| D[Map to line items<br/>source: model]
-    C -->|invalid| E[One repair generation]
-    E --> F{zod validate}
-    F -->|valid| D
-    F -->|invalid| G[Surrender -<br/>manual mode]
-    D --> H[Sheet: dashed,<br/>"Estimated. Yours to set."]
-    H -->|user taps Confirm| I[Sheet: solid,<br/>source: user]
-    H -->|user edits/removes| I
-    style G fill:#C0392B,color:#fff
-    style I fill:#2B4BD7,color:#fff
-```
+![Flow: mic or text input through Gemma 3 270M, JSON-schema validation, one repair retry, and either a confirmed sheet line or a fallback to manual mode](https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/8dzj4ghzeq12cmftyxd5.png)
 
 Concretely:
 
