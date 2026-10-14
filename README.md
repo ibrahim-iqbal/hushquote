@@ -9,6 +9,8 @@ never leave the device they were typed on.
 **Live:** https://hushquote.onrender.com
 **Built for:** [DEV Hacktoberfest Open-Source AI Challenge, Week 2](https://dev.to/events/challenges/hacktoberfest-week2-2026-10-12) ("Side Hustle"), targeting Best Use of Gemma and Best Use of Render.
 
+![Real job typed in, the model extracts it, one line confirmed, client named - all on the live deploy](docs/design/post-screenshots/hushquote-demo.gif)
+
 ## Status
 
 Feature-complete and deployed. Say or type a job, the model extracts
@@ -55,6 +57,14 @@ contract, including the cover page, built from a gradient generated with
 shimmer on AI-estimated lines, a glow while the model's thinking) is scoped
 to real state, not decoration - see the D4 UX-pass entries in
 `docs/PLAN.md`.
+
+![Cover page - model downloading, then the lock-open reveal](docs/design/post-screenshots/01-cover.jpg)
+
+![The Sheet mid-extraction - confirmed and still-estimated lines side by side](docs/design/post-screenshots/02-sheet-extraction.jpg)
+
+### How extraction works
+
+![Flow: mic or text input through Gemma 3 270M, JSON-schema validation, one repair retry, and either a confirmed sheet line or a fallback to manual mode](docs/design/post-screenshots/extraction-flow.png)
 
 ## Development
 
