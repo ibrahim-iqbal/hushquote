@@ -113,7 +113,7 @@ export default function SheetLineItem({ item, animationDelay = 0 }) {
     >
       <div>
         {pending && (
-          <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
+          <span className="mb-2 block text-[11px] font-semibold uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
             Estimated. Yours to set.
           </span>
         )}
