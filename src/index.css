@@ -109,6 +109,20 @@ body {
   animation: item-in 220ms ease-out backwards;
 }
 
+/* Exit companion to item-in: played via a local `leaving` state in
+   SheetLineItem (see handleRemove) so a removed line collapses instead of
+   vanishing instantly. 180ms to match the setTimeout that actually
+   dispatches ITEM_REMOVED once this has had time to play. */
+@keyframes item-out {
+  from { opacity: 1; transform: translateY(0) scale(1); max-height: 120px; }
+  to { opacity: 0; transform: translateY(-4px) scale(0.98); max-height: 0; margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; }
+}
+
+.animate-item-out {
+  animation: item-out 180ms ease-in forwards;
+  overflow: hidden;
+}
+
 /* 2026-10-14 (UX pass): purposeful ambient motion, scoped to moments where
    the model is actually doing something - never decorative. Each one is
    tied to real state (status === 'busy', a line's source === 'model'),
@@ -175,6 +189,7 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .animate-item-in,
+  .animate-item-out,
   .animate-pending-shimmer,
   .animate-thinking-glow,
   .animate-listening-ring,

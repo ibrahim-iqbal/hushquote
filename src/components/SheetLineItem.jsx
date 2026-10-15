@@ -90,14 +90,28 @@ function EditableNumber({ value, onChange, placeholder, className }) {
 export default function SheetLineItem({ item, animationDelay = 0 }) {
   const dispatch = useQuoteDispatch()
   const pending = item.source === 'model'
+  const [leaving, setLeaving] = useState(false)
+
+  const handleRemove = () => {
+    // Tactile exit instead of an instant unmount: fade + collapse, then
+    // dispatch once the transition has actually played. Duration here must
+    // match animate-item-out's keyframe time below.
+    setLeaving(true)
+    window.setTimeout(() => dispatch({ type: 'ITEM_REMOVED', id: item.id }), 180)
+  }
 
   return (
     <div
-      className={`animate-item-in motion-safe:transition-colors motion-safe:duration-200 ${pending ? 'rounded-lg border-t-0' : 'border-t'}`}
-      style={{ animationDelay: `${animationDelay}ms`, ...(pending ? { background: 'var(--pending)' } : { borderColor: 'var(--line)' }) }}
+      className={`motion-safe:transition-[border-color,background-color] motion-safe:duration-300 rounded-lg m-2.5 border-[1.5px] p-2.5 ${
+        leaving ? 'animate-item-out' : 'animate-item-in'
+      } ${pending ? 'border-dashed animate-pending-shimmer' : 'border-solid'}`}
+      style={{
+        animationDelay: leaving ? undefined : `${animationDelay}ms`,
+        borderColor: pending ? 'var(--muted)' : 'var(--line)',
+        background: pending ? undefined : 'var(--surface)',
+      }}
     >
-      <div className={pending ? 'm-2.5 rounded-lg border-[1.5px] border-dashed p-2.5 animate-pending-shimmer' : 'flex items-baseline justify-between gap-3 py-2.5'}
-           style={pending ? { borderColor: 'var(--muted)' } : undefined}>
+      <div>
         {pending && (
           <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
             Estimated. Yours to set.
@@ -140,7 +154,7 @@ export default function SheetLineItem({ item, animationDelay = 0 }) {
               <button
                 type="button"
                 onClick={() => dispatch({ type: 'ITEM_CONFIRMED', id: item.id })}
-                className="mt-1.5 text-[12.5px] font-semibold motion-safe:transition-opacity hover:opacity-70"
+                className="mt-1.5 text-[12.5px] font-semibold motion-safe:transition-[opacity,transform] motion-safe:duration-150 hover:opacity-70 motion-safe:active:scale-95"
                 style={{ color: 'var(--accent)' }}
               >
                 Use this rate
@@ -151,9 +165,9 @@ export default function SheetLineItem({ item, animationDelay = 0 }) {
             <span className="font-mono text-[13px]">{formatNumber(lineAmount(item))}</span>
             <button
               type="button"
-              onClick={() => dispatch({ type: 'ITEM_REMOVED', id: item.id })}
+              onClick={handleRemove}
               aria-label="Remove line"
-              className="opacity-40 motion-safe:transition-opacity motion-safe:duration-150 hover:opacity-100"
+              className="opacity-40 motion-safe:transition-[opacity,transform] motion-safe:duration-150 hover:opacity-100 motion-safe:active:scale-90"
             >
               <X size={14} />
             </button>
