@@ -31,6 +31,7 @@ import { buildMessages, GENERATION_PARAMS } from '../lib/prompt'
 import { MODEL_OUTPUT_JSON_SCHEMA } from '../lib/modelOutputJsonSchema'
 import { tryParse } from '../lib/parseModelOutput'
 import { mapModelOutputToItems } from '../lib/mapModelOutput'
+import { filterCalloutLeak } from '../lib/filterHallucinations'
 import { RateItem } from '../lib/schema'
 import { loadJSON, KEYS } from '../lib/storage'
 import { z } from 'zod'
@@ -128,7 +129,10 @@ export function ModelProvider({ children }) {
       const raw = await runCompletion(messages, controller.signal)
 
       const first = tryParse(raw)
-      if (first.ok) return mapModelOutputToItems(first.data, rateLibrary)
+      if (first.ok) {
+        const items = filterCalloutLeak(first.data.items, text)
+        return mapModelOutputToItems({ ...first.data, items }, rateLibrary)
+      }
 
       // Step 3: one repair generation, per docs/ARCHITECTURE.md section 5.
       const repairMessages = [
@@ -141,7 +145,10 @@ export function ModelProvider({ children }) {
       ]
       const repaired = await runCompletion(repairMessages, controller.signal)
       const second = tryParse(repaired)
-      if (second.ok) return mapModelOutputToItems(second.data, rateLibrary)
+      if (second.ok) {
+        const items = filterCalloutLeak(second.data.items, text)
+        return mapModelOutputToItems({ ...second.data, items }, rateLibrary)
+      }
 
       return null
     } catch (err) {
