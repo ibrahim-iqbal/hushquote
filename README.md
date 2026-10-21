@@ -122,3 +122,10 @@ file itself is not committed to the repo.
 ## License
 
 MIT, see `LICENSE`.
+
+
+---
+
+<p align="center">
+  <sub><em>crafted by <a href="https://github.com/ibrahim-iqbal">ibrahim-iqbal</a> · <a href="https://dev.to/ibrahimiqbal">dev.to</a></em></sub>
+</p>
